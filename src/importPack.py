@@ -27,7 +27,7 @@ def importKopete(targetFile):
             #print text.firstChild.data
     for icon in pack.icons:
         imageContent = zip.read(os.path.join(pack.name, icon.image))
-        fout = open(os.path.join(options.TEMP_DIR, icon.image),  "w")
+        fout = open(os.path.join(options.TEMP_DIR, icon.image),  "wb")
         fout.write(imageContent)
         fout.close()
 #    DAO().updatePack(pack)
