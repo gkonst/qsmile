@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="smileManager" >
+    <file>images/down32.png</file>
+    <file>images/delete32.png</file>
+    <file>images/up32.png</file>
+    <file>images/add32.png</file>
+  </qresource>
+</RCC>
