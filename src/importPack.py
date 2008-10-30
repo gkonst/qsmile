@@ -1,5 +1,5 @@
-from zipfile import ZipFile
 import os
+from zipfile import ZipFile
 from model import Pack,  Icon
 #from dao import DAO
 import options
@@ -51,11 +51,21 @@ def importPidginZip(targetFile):
             icon = Icon([], line.partition(" ")[0])
             #TODO implement text processing
             pack.addIcon(icon)
-        elif line.find("Name=") != -1:
+        elif "Name=" in line:
             pack.name = line.partition("=")[2]
-        elif line.find("Author=") != -1:
+        elif "Author=" in line:
             pack.author = line.partition("=")[2]
-        elif line.find("[default]"):
+        elif "[default]" in line:
             smilePartStarted = True
     return pack
     print "import from pidgin zip finished"
+    
+@printTiming
+def importQipZip(targetFile):
+    print "import from qip zip started..."
+    zip = ZipFile(targetFile, "r")
+    content = zip.read(filter(lambda item: item.endswith("_define.ini"), zip.namelist())[0])
+    pack = Pack()
+    
+    return pack
+    print "import from qip zip finished"

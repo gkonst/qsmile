@@ -1,8 +1,9 @@
 import os
+from itertools import ifilter
+from xml.dom import getDOMImplementation
 from zipfile import ZipFile
 import options
 from util import printTiming
-from xml.dom import getDOMImplementation
 
 @printTiming
 def exportPidgin(pack, targetFile):
@@ -14,8 +15,24 @@ def exportPidgin(pack, targetFile):
         content.append("Icon=" + pack.icon + "\n")
     content.append("[default]\n")
     for icon in pack.icons:
-        text = icon.image + " " + " ".join(icon.text) + "\n"
-        content.append(text)
+        # escaping '\'
+        for i, text in enumerate(ifilter(lambda text: "\\" in text, icon.text)):
+            # TODO simplify insertion
+            temp = list(text)
+            temp.insert(text.find("\\"), "\\")
+            text = "".join(temp)
+            # TODO may be bad
+            icon.text[i] = text
+        # escaping ' '
+        for i, text in enumerate(ifilter(lambda text: " " in text, icon.text)):
+            # TODO simplify insertion
+            temp = list(text)
+            temp.insert(text.find(" "), "\\")
+            text = "".join(temp)
+            # TODO may be bad
+            icon.text[i] = text
+        fullText = icon.image + " " + " ".join(icon.text) + "\n"
+        content.append(fullText)
     zip = ZipFile(targetFile, "w")
     zip.writestr(os.path.join(pack.name, "theme"), "".join(content))
     for icon in pack.icons:
@@ -70,7 +87,7 @@ def exportQip(pack, targetFile):
     print "export to qip started..."
     content = []
     for icon in pack.icons:
-        content.append(" ".join(icon.text) + "\n")
+        content.append(",".join(icon.text) + "\n")
     zip = ZipFile(targetFile, "w")
     zip.writestr(os.path.join(pack.name, "Animated", "_define.ini"), "".join(content))
     for icon in pack.icons:

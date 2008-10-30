@@ -4,14 +4,15 @@
 Module implementing MainWindow.
 """
 
+import os
+import tempfile
+from shutil import copyfile
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
 #from dao import DAO
 from export import exportPidgin, exportKopete, exportQip, exportAll
 from importPack import importKopete, importPidginZip
-from shutil import copyfile
-import os, tempfile
 import options
 
 from ui.Ui_MainWindow import Ui_MainWindow
@@ -143,7 +144,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     @pyqtSignature("")
     def on_saveTextButton_clicked(self):
-        self.textList.currentItem().setText(self.textEdit.text())
+        if "," in str(self.textEdit.text()):
+            QtGui.QMessageBox.warning(self, "Wrong character in smile text", "Wrong character in smile text", "Ok")
+        else:
+            self.textList.currentItem().setText(self.textEdit.text())
     
     @pyqtSignature("")
     def on_saveButton_clicked(self):

@@ -1,5 +1,5 @@
 class Icon(object):
-    def __init__(self, text , image = None):
+    def __init__(self, text , image=None):
         self.text = text
         self.image = image
 
@@ -15,7 +15,7 @@ class Icon(object):
 class Pack(object):
     def __init__(self):
         self.icons = []
-        self.author = ""
+        self.author = "UNKNOWN"
         self.name = "UNKNOWN"
         self.icon = ""
         self.version = ""
