@@ -22,6 +22,7 @@ def importKopete(targetFile):
         xmlName = xmlMeta[0].getElementsByTagName("name")
         if xmlName:
             pack.name = str(xmlName[0].firstChild.data)
+            print " pack name : ",  pack.name
     xmlIcons = dom.getElementsByTagName("icon")
     for xmlIicon in xmlIcons:
         icon = Icon([], str(xmlIicon.getElementsByTagName("object")[0].firstChild.data))
@@ -30,7 +31,7 @@ def importKopete(targetFile):
             icon.addText(str(text.firstChild.data))
             #print text.firstChild.data
     for icon in pack.icons:
-        imageContent = zip.read(os.path.join(pack.name, icon.image))
+        imageContent = zip.read("%(dir)s/%(image)s" % {"dir" : pack.name, "image" : icon.image})
         fout = open(os.path.join(options.TEMP_DIR, icon.image),  "wb")
         fout.write(imageContent)
         fout.close()
