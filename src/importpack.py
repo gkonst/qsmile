@@ -56,11 +56,10 @@ def importPidginZip(targetFile):
     pack = Pack()
     smilePartStarted = False
     for line in ifilter(lambda line: line and not line.startswith("!"), content.split("\n")):
-        # TODO ugly hack, need to fix, remove tabs and place only one space
         line = line.replace("\t", " ")
         if smilePartStarted:
             icon = Icon([], line.partition(" ")[0])
-            texts = line.partition(" ")[2].split(" ")
+            texts = line.partition(" ")[2].strip().split(" ")
             print "  texts : ", texts
             i = 0
             while i < len(texts):
@@ -84,9 +83,9 @@ def importPidginZip(targetFile):
             fout.write(imageContent)
             fout.close()          
         elif "Name=" in line:
-            pack.name = line.partition("=")[2]
+            pack.name = line.partition("=")[2].strip()
         elif "Author=" in line:
-            pack.author = line.partition("=")[2]
+            pack.author = line.partition("=")[2].strip()
         elif "[default]" in line:
             smilePartStarted = True
     return pack
