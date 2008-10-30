@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import time
 def printTiming(func):
     def wrapper(*arg):

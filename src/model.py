@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Icon(object):
     def __init__(self, text , image=None):
         self.text = text

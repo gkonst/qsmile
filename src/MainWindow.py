@@ -10,9 +10,8 @@ from shutil import copyfile
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
-#from dao import DAO
-from export import exportPidgin, exportKopete, exportQip, exportAll
-from importPack import importKopete, importPidginZip
+from exportpack import exportPidgin, exportKopete, exportQip, exportAll
+from importpack import importKopete, importPidginZip
 import options
 
 from ui.Ui_MainWindow import Ui_MainWindow
@@ -26,13 +25,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Constructor
         """
         QMainWindow.__init__(self, parent)
-        self.setupUi(self)
- #       self.dao = DAO()        
+        self.setupUi(self)       
         #options.TEMP_DIR = tempfile.mkdtemp()
     
     def fillTable(self):
         print "options.TEMP_DIR : ", options.TEMP_DIR 
-#        self.pack = self.dao.loadPack()
         self.table.setEnabled(True)
         self.packBox.setEnabled(True)
         self.addSmileButton.setEnabled(True)
@@ -77,7 +74,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pack.icons[row].image , self.pack.icons[move(row)].image = self.pack.icons[move(row)].image , self.pack.icons[row].image        
         # changing rows in pack
         self.pack.icons[row] , self.pack.icons[move(row)] = self.pack.icons[move(row)] , self.pack.icons[row]        
-#        self.dao.updatePack(self.pack)
         self.fillTableRow(row)
         self.fillTableRow(move(row))        
         self.table.setCurrentCell(move(row), 0)
@@ -152,8 +148,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @pyqtSignature("")
     def on_saveButton_clicked(self):
         icon = self.pack.icons[self.table.currentRow()]
-        # copying image
-        
+        # copying image      
         if icon.image == None or self.movie.fileName() != os.path.join(options.TEMP_DIR, icon.image): 
             print "fileName : ", self.movie.fileName()
             copyfile(os.path.join(options.TEMP_DIR, icon.image), os.path.join(options.TEMP_DIR, icon.image + ".bak"))  
@@ -165,7 +160,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             icon.text.append(str(self.textList.item(i).text()))
         print icon.text
         self.fillTableRow(self.table.currentRow())
-        #self.dao.updatePack(self.pack)
     
     @pyqtSignature("")        
     def on_cancelButton_clicked(self):
@@ -225,4 +219,4 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From Pidgin ZIP", os.path.expanduser('~'), "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:
             self.pack = importPidginZip(str(targetFile))
-            #self.fillTable()
+            self.fillTable()
