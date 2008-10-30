@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 import os
 from zipfile import ZipFile
 from model import Pack,  Icon
-#from dao import DAO
 import options
 from util import printTiming
 
@@ -35,7 +35,6 @@ def importKopete(targetFile):
         fout = open(os.path.join(options.TEMP_DIR, icon.image),  "wb")
         fout.write(imageContent)
         fout.close()
-#    DAO().updatePack(pack)
     return pack;
     print "import from kopete jisp finished"
 
