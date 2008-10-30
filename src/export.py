@@ -2,7 +2,6 @@ import os
 from zipfile import ZipFile
 import options
 from util import printTiming
-from xml.dom.ext import PrettyPrint
 from xml.dom import getDOMImplementation
 
 @printTiming
@@ -33,6 +32,7 @@ def exportKopete(pack, targetFile):
     else:
         import cStringIO as StringIO
         stream=StringIO.StringIO()
+        from xml.dom.ext import PrettyPrint
         PrettyPrint(packDocument, stream)
         content = stream.getvalue()
     zip = ZipFile(targetFile, "w")

@@ -1,5 +1,4 @@
 from zipfile import ZipFile
-from xml.dom.ext.reader import PyExpat
 import os
 from model import Pack,  Icon
 #from dao import DAO
@@ -12,7 +11,12 @@ def importKopete(targetFile):
     zip = ZipFile(targetFile, "r")
     content = zip.read(filter(lambda item: item.endswith("icondef.xml"), zip.namelist())[0])
     pack = Pack()
-    dom = PyExpat.Reader().fromString(content)
+    try:
+        from xml.dom.ext.reader import PyExpat
+        dom = PyExpat.Reader().fromString(content)
+    except ImportError:
+        from xml.dom.minidom import parseString
+        dom = parseString(content)
     xmlMeta = dom.getElementsByTagName("meta")
     if xmlMeta:
         xmlName = xmlMeta[0].getElementsByTagName("name")
