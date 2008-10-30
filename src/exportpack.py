@@ -18,20 +18,11 @@ def exportPidgin(pack, targetFile):
     for icon in pack.icons:
         # escaping '\'
         for i, text in enumerate(ifilter(lambda text: "\\" in text, icon.text)):
-            # TODO simplify insertion
-            temp = list(text)
-            temp.insert(text.find("\\"), "\\")
-            text = "".join(temp)
-            # TODO may be bad
-            icon.text[i] = text
+            icon.text[i] = text.replace("\\", "\\\\")
         # escaping ' '
         for i, text in enumerate(ifilter(lambda text: " " in text, icon.text)):
-            # TODO simplify insertion
-            temp = list(text)
-            temp.insert(text.find(" "), "\\")
-            text = "".join(temp)
             # TODO may be bad
-            icon.text[i] = text
+            icon.text[i] = text.replace(" ","\\ ")
         fullText = icon.image + " " + " ".join(icon.text) + "\n"
         content.append(fullText)
     zip = ZipFile(targetFile, "w")

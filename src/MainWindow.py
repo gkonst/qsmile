@@ -11,7 +11,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
 from exportpack import exportPidgin, exportKopete, exportQip, exportAll
-from importpack import importKopete, importPidginZip
+from importpack import importKopete, importPidginZip, importQipZip
 import options
 
 from ui.Ui_MainWindow import Ui_MainWindow
@@ -219,4 +219,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From Pidgin ZIP", os.path.expanduser('~'), "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:
             self.pack = importPidginZip(str(targetFile))
+            self.fillTable()
+            
+    @pyqtSignature("")
+    def on_actionImport_From_QIP_ZIP_triggered(self):
+        targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From QIP ZIP", os.path.expanduser('~'), "QIP Smile Pack ZIP (*.zip)")
+        if targetFile:
+            self.pack = importQipZip(str(targetFile))
             self.fillTable()
