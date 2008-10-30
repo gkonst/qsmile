@@ -2,3 +2,5 @@
 data
 .project
 .pydevproject
+_eric4project
+*.e4p
