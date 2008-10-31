@@ -13,20 +13,20 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <widget class="QGroupBox" name="smileBox" >
+   <widget class="QGroupBox" name="smileDetailBox" >
     <property name="enabled" >
      <bool>false</bool>
     </property>
     <property name="geometry" >
      <rect>
       <x>460</x>
-      <y>150</y>
+      <y>130</y>
       <width>321</width>
-      <height>391</height>
+      <height>411</height>
      </rect>
     </property>
     <property name="title" >
-     <string>Smile</string>
+     <string>Edit smile</string>
     </property>
     <widget class="QListWidget" name="textList" >
      <property name="geometry" >
@@ -167,150 +167,6 @@
      </property>
     </widget>
    </widget>
-   <widget class="QTableWidget" name="table" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>160</y>
-      <width>371</width>
-      <height>381</height>
-     </rect>
-    </property>
-    <property name="editTriggers" >
-     <set>QAbstractItemView::NoEditTriggers</set>
-    </property>
-    <property name="selectionMode" >
-     <enum>QAbstractItemView::SingleSelection</enum>
-    </property>
-    <property name="selectionBehavior" >
-     <enum>QAbstractItemView::SelectRows</enum>
-    </property>
-    <property name="columnCount" >
-     <number>3</number>
-    </property>
-    <column>
-     <property name="text" >
-      <string>Icon</string>
-     </property>
-    </column>
-    <column>
-     <property name="text" >
-      <string>Icon filename</string>
-     </property>
-    </column>
-    <column>
-     <property name="text" >
-      <string>Text</string>
-     </property>
-    </column>
-   </widget>
-   <widget class="QToolButton" name="addSmileButton" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>130</y>
-      <width>27</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>...</string>
-    </property>
-    <property name="icon" >
-     <iconset resource="MainWindow.qrc" >
-      <normaloff>:/smileManager/images/add32.png</normaloff>:/smileManager/images/add32.png</iconset>
-    </property>
-    <property name="iconSize" >
-     <size>
-      <width>32</width>
-      <height>32</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QToolButton" name="removeSmileButton" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>40</x>
-      <y>130</y>
-      <width>27</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>...</string>
-    </property>
-    <property name="icon" >
-     <iconset resource="MainWindow.qrc" >
-      <normaloff>:/smileManager/images/delete32.png</normaloff>:/smileManager/images/delete32.png</iconset>
-    </property>
-    <property name="iconSize" >
-     <size>
-      <width>32</width>
-      <height>32</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QToolButton" name="upSmileButton" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>70</x>
-      <y>130</y>
-      <width>27</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>...</string>
-    </property>
-    <property name="icon" >
-     <iconset resource="MainWindow.qrc" >
-      <normaloff>:/smileManager/images/up32.png</normaloff>:/smileManager/images/up32.png</iconset>
-    </property>
-    <property name="iconSize" >
-     <size>
-      <width>32</width>
-      <height>32</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QToolButton" name="downSmileButton" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>100</x>
-      <y>130</y>
-      <width>27</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>...</string>
-    </property>
-    <property name="icon" >
-     <iconset resource="MainWindow.qrc" >
-      <normaloff>:/smileManager/images/down32.png</normaloff>:/smileManager/images/down32.png</iconset>
-    </property>
-    <property name="iconSize" >
-     <size>
-      <width>32</width>
-      <height>32</height>
-     </size>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="packBox" >
     <property name="enabled" >
      <bool>false</bool>
@@ -319,7 +175,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>761</width>
+      <width>771</width>
       <height>111</height>
      </rect>
     </property>
@@ -429,6 +285,139 @@
      </property>
      <property name="buddy" >
       <cstring>versionEdit</cstring>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="smileListBox" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>130</y>
+      <width>401</width>
+      <height>411</height>
+     </rect>
+    </property>
+    <property name="title" >
+     <string>Smile list</string>
+    </property>
+    <widget class="QTableWidget" name="table" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>381</width>
+       <height>351</height>
+      </rect>
+     </property>
+     <property name="editTriggers" >
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior" >
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="columnCount" >
+      <number>3</number>
+     </property>
+     <column>
+      <property name="text" >
+       <string>Icon</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Icon filename</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Text</string>
+      </property>
+     </column>
+    </widget>
+    <widget class="QToolButton" name="downSmileButton" >
+     <property name="geometry" >
+      <rect>
+       <x>100</x>
+       <y>20</y>
+       <width>27</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="icon" >
+      <iconset resource="MainWindow.qrc" >
+       <normaloff>:/smileManager/images/down32.png</normaloff>:/smileManager/images/down32.png</iconset>
+     </property>
+     <property name="iconSize" >
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QToolButton" name="removeSmileButton" >
+     <property name="geometry" >
+      <rect>
+       <x>40</x>
+       <y>20</y>
+       <width>27</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="icon" >
+      <iconset resource="MainWindow.qrc" >
+       <normaloff>:/smileManager/images/delete32.png</normaloff>:/smileManager/images/delete32.png</iconset>
+     </property>
+     <property name="iconSize" >
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QToolButton" name="upSmileButton" >
+     <property name="geometry" >
+      <rect>
+       <x>70</x>
+       <y>20</y>
+       <width>27</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="icon" >
+      <iconset resource="MainWindow.qrc" >
+       <normaloff>:/smileManager/images/up32.png</normaloff>:/smileManager/images/up32.png</iconset>
+     </property>
+     <property name="iconSize" >
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QToolButton" name="addSmileButton" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>27</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="icon" >
+      <iconset resource="MainWindow.qrc" >
+       <normaloff>:/smileManager/images/add32.png</normaloff>:/smileManager/images/add32.png</iconset>
+     </property>
+     <property name="iconSize" >
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
      </property>
     </widget>
    </widget>

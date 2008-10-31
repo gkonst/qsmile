@@ -31,9 +31,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def fillTable(self):
         print "options.TEMP_DIR : ", options.TEMP_DIR 
         self.menuExport.setEnabled(True)
-        self.table.setEnabled(True)
         self.packBox.setEnabled(True)
-        self.addSmileButton.setEnabled(True)
+        self.smileListBox.setEnabled(True)
         self.nameEdit.setText(self.pack.name)
         self.authorEdit.setText(self.pack.author)
         self.versionEdit.setText(self.pack.version)
@@ -85,37 +84,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pack.addIcon(None)
         self.table.insertRow(self.table.rowCount())
         self.table.setCurrentCell(self.table.rowCount() - 1, 0)
+        self.showItem(True)
         
     @pyqtSignature("")
     def on_removeSmileButton_clicked(self):
         if not QtGui.QMessageBox.question(self, "Are you sure?", "Are you sure?", "Yes", "No"):
-            os.remove(os.path.join(options.TEMP_DIR, self.pack.icons[self.table.currentRow()].image))
-            self.pack.deleteIcon(self.table.currentRow())
+            icon = self.pack.icons[self.table.currentRow()]
+            #self.table.cellWidget(self.table.currentRow(), 0).clear()
+            #del self.movieList[self.table.currentRow()]
             self.table.removeRow(self.table.currentRow())
-
-    @pyqtSignature("int, int")
-    def on_table_cellClicked(self):
-        print "DDDDD"
-    
-    @pyqtSignature("")
-    def on_table_itemSelectionChanged(self):
-        print "CC"
+            if icon and icon.image and os.path.exists(os.path.join(options.TEMP_DIR, icon.image)):
+                os.remove(os.path.join(options.TEMP_DIR, icon.image))
+            self.pack.deleteIcon(self.table.currentRow())
             
     @pyqtSignature("int, int, int, int")
     def on_table_currentCellChanged(self, currentRow, currentColumn, previousRow, previousColumn):
-        if not self.pack.validateIcon(previousRow):
-            print "A"
-            #self.table.setCurrentCell(previousRow, 0, QtGui.QItemSelectionModel.Select)
-            #self.table.setCurrentCell(currentRow, 0, QtGui.QItemSelectionModel.Deselect)
-#            self.pack.deleteIcon(previousRow)
-#            self.table.removeRow(previousRow)
-        else:
-            print "B"
-            self.upSmileButton.setEnabled(currentRow > 0)
-            self.downSmileButton.setEnabled(currentRow < self.table.rowCount() - 1)
-            self.removeSmileButton.setEnabled(True)
-            self.showItem()
-    
+        self.upSmileButton.setEnabled(currentRow > 0)
+        self.downSmileButton.setEnabled(currentRow < self.table.rowCount() - 1)
+        self.removeSmileButton.setEnabled(True)
+        self.showItem()
+        
+    @pyqtSignature("int, int")
+    def on_table_cellDoubleClicked(self, currentRow, currentColumn):
+        self.showItem(True)
+        
     @pyqtSignature("")
     def on_changeImageButton_clicked(self):
         imageFile = QtGui.QFileDialog.getOpenFileName(self, "Choose picture", os.path.expanduser('~'), "gif (*.gif)")
@@ -167,10 +159,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def on_cancelButton_clicked(self):
         self.showItem()
         
-    def showItem(self):
+    def showItem(self, editFlag=False):
         icon = self.pack.icons[self.table.currentRow()]
         print "selected icon : ",  icon
-        self.smileBox.setEnabled(True)
+        self.smileDetailBox.setEnabled(editFlag)
+        self.smileListBox.setEnabled(not editFlag)
         # setting movie
         self.movieLabel.clear()
         if icon and icon.image and os.path.exists(os.path.join(options.TEMP_DIR, icon.image)):
