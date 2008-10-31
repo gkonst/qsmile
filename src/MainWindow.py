@@ -45,12 +45,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def fillTableRow(self, row):
         icon = self.pack.icons[row]
         movieLabel = QtGui.QLabel()
-        if row >= len(self.movieList):
-            self.movieList.append(QtGui.QMovie(os.path.join(options.TEMP_DIR, icon.image)))
-        else:
-            self.movieList[row] = QtGui.QMovie(os.path.join(options.TEMP_DIR, icon.image))
-        movieLabel.setMovie(self.movieList[row])
-        movieLabel.movie().start()
+        if icon and icon.image and os.path.exists(os.path.join(options.TEMP_DIR, icon.image)):
+            if row >= len(self.movieList):
+                self.movieList.append(QtGui.QMovie(os.path.join(options.TEMP_DIR, icon.image)))
+            else:
+                self.movieList[row] = QtGui.QMovie(os.path.join(options.TEMP_DIR, icon.image))
+            movieLabel.setMovie(self.movieList[row])
+            movieLabel.movie().start()
         self.table.setCellWidget(row, 0, movieLabel)
         self.table.setCellWidget(row, 1, QtGui.QLabel(icon.image))
         self.table.setCellWidget(row, 2, QtGui.QLabel(" ".join(icon.text)))
@@ -185,19 +186,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @pyqtSignature("")
     def on_actionExport_To_Kopete_triggered(self):
-        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Kopete JISP", os.path.join(os.path.expanduser('~'), self.pack.name + ".jisp"), "Kopete Smile Pack JISP (*.jisp)")
+        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Kopete JISP", self.pack.name + ".jisp", "Kopete Smile Pack JISP (*.jisp)")
         if targetFile:
             exportKopete(self.pack, str(targetFile))
         
     @pyqtSignature("")
     def on_actionExport_To_Pidgin_triggered(self):
-        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Pidgin ZIP", os.path.join(os.path.expanduser('~'), self.pack.name + "_pidgin.zip"), "Pidgin Smile Pack ZIP (*.zip)")
+        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Pidgin ZIP", self.pack.name + "_pidgin.zip", "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:    
             exportPidgin(self.pack, str(targetFile))
         
     @pyqtSignature("")
     def on_actionExport_To_Qip_triggered(self):
-        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to QIP ZIP", os.path.join(os.path.expanduser('~'), self.pack.name + "_qip.zip"), "QIP Smile Pack ZIP (*.zip)")
+        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to QIP ZIP", self.pack.name + "_qip.zip", "QIP Smile Pack ZIP (*.zip)")
         if targetFile:
             exportQip(self.pack, str(targetFile))
 

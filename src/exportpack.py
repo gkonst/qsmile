@@ -9,11 +9,11 @@ from util import printTiming
 @printTiming
 def exportPidgin(pack, targetFile):
     print "export to pidgin started..."
-    content = ["Name=" + pack.name + "\n"]
+    content = ["Name=%s\n"  % pack.name]
     if pack.author:
-        content.append("Author=" + pack.author + "\n")
+        content.append("Author=%s\n" % pack.author)
     if pack.icon:
-        content.append("Icon=" + pack.icon + "\n")
+        content.append("Icon=%s\n" % pack.icon)
     content.append("[default]\n")
     for icon in pack.icons:
         # escaping '\'
