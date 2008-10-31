@@ -30,6 +30,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     def fillTable(self):
         print "options.TEMP_DIR : ", options.TEMP_DIR 
+        self.menuExport.setEnabled(True)
         self.table.setEnabled(True)
         self.packBox.setEnabled(True)
         self.addSmileButton.setEnabled(True)

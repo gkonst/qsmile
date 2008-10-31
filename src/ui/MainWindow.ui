@@ -453,6 +453,9 @@
     <addaction name="actionImport_From_QIP_Folder" />
    </widget>
    <widget class="QMenu" name="menuExport" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
     <property name="title" >
      <string>Export</string>
     </property>
