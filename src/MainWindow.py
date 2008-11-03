@@ -131,6 +131,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @pyqtSignature("")
     def on_textList_itemSelectionChanged(self):
         self.textEdit.setText(self.textList.currentItem().text())
+        self.textEdit.setFocus()
     
     @pyqtSignature("")
     def on_saveTextButton_clicked(self):
