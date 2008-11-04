@@ -155,22 +155,25 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     
     @pyqtSignature("")
     def on_saveButton_clicked(self):
-        # copying image      
-        if self.currentSmile.image == None or self.movie.fileName() != os.path.join(options.TEMP_DIR, self.currentSmile.image): 
-            print "fileName : ", self.movie.fileName()
-            copyfile(self.movie.fileName(), os.path.join(options.TEMP_DIR, self.currentSmile.image))
-        # updating text
-        self.currentSmile.text = []
-        for i in range(self.textList.count()):
-            self.currentSmile.text.append(str(self.textList.item(i).text()))
-        print self.currentSmile.text
-        if self.isCreateMode():
-            self.pack.addIcon(self.currentSmile)
-            self.table.insertRow(self.table.rowCount())
-            self.table.setCurrentCell(self.table.rowCount() - 1, 0)
-        self.setViewMode()
-        self.fillTableRow(self.table.currentRow())
-        self.switchForm()
+        if self.currentSmile.validateIcon():
+            # copying image      
+            if self.currentSmile.image == None or self.movie.fileName() != os.path.join(options.TEMP_DIR, self.currentSmile.image): 
+                print "fileName : ", self.movie.fileName()
+                copyfile(self.movie.fileName(), os.path.join(options.TEMP_DIR, self.currentSmile.image))
+            # updating text
+            self.currentSmile.text = []
+            for i in range(self.textList.count()):
+                self.currentSmile.text.append(str(self.textList.item(i).text()))
+            print self.currentSmile.text
+            if self.isCreateMode():
+                self.pack.addIcon(self.currentSmile)
+                self.table.insertRow(self.table.rowCount())
+                self.table.setCurrentCell(self.table.rowCount() - 1, 0)
+            self.setViewMode()
+            self.fillTableRow(self.table.currentRow())
+            self.switchForm()
+        else:
+            QtGui.QMessageBox.warning(self, "Can't save empty smile", "Can't save empty smile", "Ok")
     
     @pyqtSignature("")        
     def on_cancelButton_clicked(self):
