@@ -1,0 +1,26 @@
+CHANGELOG for qsmile (QT Smile Manager for Instant Messangers)
+
+Version 0.1:
+ - Import
+  - Import From Kopete JISP
+  - Import From Pidgin ZIP
+  - Import From Qip ZIP
+ - Export
+  - Export To Kopete JISP
+  - Export To Pidgin ZIP
+  - Export To Qip ZIP
+  - Export To All
+ - Pack
+  - Simple Info
+ - Smile list
+  - Smile order
+  - Delete smile
+  - Add smile
+  - Edit smile
+ - Smile detail
+  - Save with simle validation
+  - Cancel
+  - Add text
+  - Delete text
+  - Edit text
+  - Change image

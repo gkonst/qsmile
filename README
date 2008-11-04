@@ -1,1 +1,19 @@
-test
+README for qsmile (QT Smile Manager for Instant Messangers)
+
+Installation
+
+    To install qsmile you need simply unpack sources to some directory.
+    If the required packages (Qt4, sip and PyQt4) are not installed,
+    please get them and install them in the following order (order is important):
+        
+        1. Install Qt4
+        
+        2. Build and install sip
+        
+        3. Build and install PyQt4
+               
+        4. Install qsmile
+        
+Running
+
+    To run qsmile simply run 'main.py' script from qsmile directory.    
