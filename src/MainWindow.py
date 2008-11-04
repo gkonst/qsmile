@@ -28,7 +28,8 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         """
         QMainWindow.__init__(self, parent)
         ModeForm.__init__(self)
-        self.setupUi(self)       
+        self.setupUi(self)
+        self.movie = None       
         #options.TEMP_DIR = tempfile.mkdtemp()
     
     def fillTable(self):
@@ -39,6 +40,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.nameEdit.setText(self.pack.name)
         self.authorEdit.setText(self.pack.author)
         self.versionEdit.setText(self.pack.version)
+        self.table.clearContents()
         self.table.setRowCount(len(self.pack.icons))
         self.movieList = []
         for i in range(len(self.pack.icons)):
@@ -86,24 +88,33 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_addSmileButton_clicked(self):
         self.currentSmile = Icon([], self.pack.generateIconFilename())
         self.setCreateMode()
-        self.showItem()
+        self.fillSmileDetail()
         
     @pyqtSignature("")
     def on_editSmileButton_clicked(self):    
         self.currentSmile = self.pack.icons[self.table.currentRow()]
         self.setEditMode()
-        self.showItem()
+        self.fillSmileDetail()
        
     @pyqtSignature("")
     def on_removeSmileButton_clicked(self):
         if not QtGui.QMessageBox.question(self, "Are you sure?", "Are you sure?", "Yes", "No"):
-            icon = self.pack.icons[self.table.currentRow()]
-            #self.table.cellWidget(self.table.currentRow(), 0).clear()
-            #del self.movieList[self.table.currentRow()]
-            self.table.removeRow(self.table.currentRow())
+            self.table.scrollToTop()
+            row = self.table.currentRow()
+            self.table.selectRow(row - 1)
+            icon = self.pack.icons[row]
+            #self.table.scrollToItem(self.table.cellWidget(i - 1, 0))
+            self.table.cellWidget(row, 0).movie().stop()
+            self.table.cellWidget(row, 0).clear()
+            self.table.removeCellWidget(row, 0)
+            self.table.removeCellWidget(row, 1)
+            self.table.removeCellWidget(row, 2)
+            del self.movieList[row]
+            self.table.removeRow(row)
+            self.clearSmileDetail()
             if icon and icon.image and os.path.exists(os.path.join(options.TEMP_DIR, icon.image)):
                 os.remove(os.path.join(options.TEMP_DIR, icon.image))
-            self.pack.deleteIcon(self.table.currentRow())
+            self.pack.deleteIcon(row)
             
     @pyqtSignature("int, int, int, int")
     def on_table_currentCellChanged(self, currentRow, currentColumn, previousRow, previousColumn):
@@ -113,13 +124,13 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.editSmileButton.setEnabled(True)
         self.currentSmile = self.pack.icons[self.table.currentRow()]
         self.setViewMode()
-        self.showItem()
+        self.fillSmileDetail()
         
     @pyqtSignature("int, int")
     def on_table_cellDoubleClicked(self, currentRow, currentColumn):
         self.currentSmile = self.pack.icons[self.table.currentRow()]
         self.setEditMode()
-        self.showItem()
+        self.fillSmileDetail()
         
     @pyqtSignature("")
     def on_changeImageButton_clicked(self):
@@ -179,20 +190,28 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_cancelButton_clicked(self):
         self.currentSmile = self.pack.icons[self.table.currentRow()]
         self.setViewMode()
-        self.showItem()
+        self.fillSmileDetail()
         
-    def showItem(self):
+    def clearSmileDetail(self):
+        if self.movieLabel.movie():
+            self.movieLabel.movie().stop()
+        self.movieLabel.clear()        
+        if self.movie:
+            self.movie.stop()
+            del self.movie
+        self.textList.clear()
+        self.textEdit.clear()
+               
+    def fillSmileDetail(self):
         print "selected icon : ",  self.currentSmile
         self.switchForm()
+        self.clearSmileDetail()
         # setting movie
-        self.movieLabel.clear()
         if self.currentSmile and self.currentSmile.image and os.path.exists(os.path.join(options.TEMP_DIR, self.currentSmile.image)):
             self.movie = QtGui.QMovie(os.path.join(options.TEMP_DIR, self.currentSmile.image))
             self.movieLabel.setMovie(self.movie)
             self.movieLabel.movie().start()
         # setting text
-        self.textList.clear()
-        self.textEdit.clear()
         if self.currentSmile and self.currentSmile.text:          
             self.textList.addItems(self.currentSmile.text)
             self.textList.setCurrentRow(0)
