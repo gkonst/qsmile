@@ -10,13 +10,15 @@ from shutil import copyfile
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
+from model import Icon
+from common import ModeForm
 from exportpack import exportPidgin, exportKopete, exportQip, exportAll
 from importpack import importKopete, importPidginZip, importQipZip
 import options
 
 from ui.Ui_MainWindow import Ui_MainWindow
 
-class MainWindow(QMainWindow, Ui_MainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     """
     Class documentation goes here.
     """
@@ -25,6 +27,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Constructor
         """
         QMainWindow.__init__(self, parent)
+        ModeForm.__init__(self)
         self.setupUi(self)       
         #options.TEMP_DIR = tempfile.mkdtemp()
     
@@ -81,11 +84,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @pyqtSignature("")
     def on_addSmileButton_clicked(self):
-        self.pack.addIcon(None)
-        self.table.insertRow(self.table.rowCount())
-        self.table.setCurrentCell(self.table.rowCount() - 1, 0)
-        self.showItem(True)
+        self.currentSmile = Icon([], self.pack.generateIconFilename())
+        self.setCreateMode()
+        self.showItem()
         
+    @pyqtSignature("")
+    def on_editSmileButton_clicked(self):    
+        self.currentSmile = self.pack.icons[self.table.currentRow()]
+        self.setEditMode()
+        self.showItem()
+       
     @pyqtSignature("")
     def on_removeSmileButton_clicked(self):
         if not QtGui.QMessageBox.question(self, "Are you sure?", "Are you sure?", "Yes", "No"):
@@ -102,11 +110,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.upSmileButton.setEnabled(currentRow > 0)
         self.downSmileButton.setEnabled(currentRow < self.table.rowCount() - 1)
         self.removeSmileButton.setEnabled(True)
+        self.editSmileButton.setEnabled(True)
+        self.currentSmile = self.pack.icons[self.table.currentRow()]
+        self.setViewMode()
         self.showItem()
         
     @pyqtSignature("int, int")
     def on_table_cellDoubleClicked(self, currentRow, currentColumn):
-        self.showItem(True)
+        self.currentSmile = self.pack.icons[self.table.currentRow()]
+        self.setEditMode()
+        self.showItem()
         
     @pyqtSignature("")
     def on_changeImageButton_clicked(self):
@@ -142,42 +155,49 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     @pyqtSignature("")
     def on_saveButton_clicked(self):
-        icon = self.pack.icons[self.table.currentRow()]
         # copying image      
-        if icon.image == None or self.movie.fileName() != os.path.join(options.TEMP_DIR, icon.image): 
+        if self.currentSmile.image == None or self.movie.fileName() != os.path.join(options.TEMP_DIR, self.currentSmile.image): 
             print "fileName : ", self.movie.fileName()
-            copyfile(os.path.join(options.TEMP_DIR, icon.image), os.path.join(options.TEMP_DIR, icon.image + ".bak"))  
-            copyfile(self.movie.fileName(), os.path.join(options.TEMP_DIR, icon.image))
+            copyfile(self.movie.fileName(), os.path.join(options.TEMP_DIR, self.currentSmile.image))
         # updating text
-        icon.text = []
-        #icon.text = map(lambda item: str(item.text()), self.textList.items(None))
+        self.currentSmile.text = []
         for i in range(self.textList.count()):
-            icon.text.append(str(self.textList.item(i).text()))
-        print icon.text
+            self.currentSmile.text.append(str(self.textList.item(i).text()))
+        print self.currentSmile.text
+        if self.isCreateMode():
+            self.pack.addIcon(self.currentSmile)
+            self.table.insertRow(self.table.rowCount())
+            self.table.setCurrentCell(self.table.rowCount() - 1, 0)
+        self.setViewMode()
         self.fillTableRow(self.table.currentRow())
+        self.switchForm()
     
     @pyqtSignature("")        
     def on_cancelButton_clicked(self):
+        self.currentSmile = self.pack.icons[self.table.currentRow()]
+        self.setViewMode()
         self.showItem()
         
-    def showItem(self, editFlag=False):
-        icon = self.pack.icons[self.table.currentRow()]
-        print "selected icon : ",  icon
-        self.smileDetailBox.setEnabled(editFlag)
-        self.smileListBox.setEnabled(not editFlag)
+    def showItem(self):
+        print "selected icon : ",  self.currentSmile
+        self.switchForm()
         # setting movie
         self.movieLabel.clear()
-        if icon and icon.image and os.path.exists(os.path.join(options.TEMP_DIR, icon.image)):
-            self.movie = QtGui.QMovie(os.path.join(options.TEMP_DIR, icon.image))
+        if self.currentSmile and self.currentSmile.image and os.path.exists(os.path.join(options.TEMP_DIR, self.currentSmile.image)):
+            self.movie = QtGui.QMovie(os.path.join(options.TEMP_DIR, self.currentSmile.image))
             self.movieLabel.setMovie(self.movie)
             self.movieLabel.movie().start()
         # setting text
         self.textList.clear()
         self.textEdit.clear()
-        if icon and icon.text:          
-            self.textList.addItems(icon.text)
+        if self.currentSmile and self.currentSmile.text:          
+            self.textList.addItems(self.currentSmile.text)
             self.textList.setCurrentRow(0)
             self.textEdit.setText(self.textList.currentItem().text())
+
+    def switchForm(self):
+        self.smileDetailBox.setEnabled(not self.isViewMode())
+        self.smileListBox.setEnabled(self.isViewMode())        
 
     @pyqtSignature("")
     def on_actionExport_To_Kopete_triggered(self):
