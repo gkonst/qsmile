@@ -45,7 +45,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.movieList = []
         for i in range(len(self.pack.icons)):
             self.fillTableRow(i)
-        self.table.setCurrentCell(0, 0)
+        self.table.selectRow(0)
             
     def fillTableRow(self, row):
         icon = self.pack.icons[row]
@@ -82,7 +82,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.pack.icons[row] , self.pack.icons[move(row)] = self.pack.icons[move(row)] , self.pack.icons[row]        
         self.fillTableRow(row)
         self.fillTableRow(move(row))        
-        self.table.setCurrentCell(move(row), 0)
+        self.table.selectRow(move(row))
 
     @pyqtSignature("")
     def on_addSmileButton_clicked(self):
@@ -154,8 +154,22 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     
     @pyqtSignature("")
     def on_textList_itemSelectionChanged(self):
-        self.textEdit.setText(self.textList.currentItem().text())
-        self.textEdit.setFocus()
+        print "count : ", self.textList.count()
+        if self.textList.count() != 0:
+            self.removeTextButton.setEnabled(True)
+            self.textEdit.setEnabled(True)
+            self.textEdit.setText(self.textList.currentItem().text())
+            self.textEdit.setFocus()
+        else:
+            self.removeTextButton.setEnabled(False)
+            self.textEdit.setEnabled(False)
+            
+    @pyqtSignature("QString")
+    def on_textEdit_textEdited(self, newText):
+        if "," in str(self.textEdit.text()):
+            self.textEdit.setText(str(self.textEdit.text()).replace(",",""))    
+        else:
+            self.textList.currentItem().setText(self.textEdit.text())
     
     @pyqtSignature("")
     def on_saveTextButton_clicked(self):
@@ -179,7 +193,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             if self.isCreateMode():
                 self.pack.addIcon(self.currentSmile)
                 self.table.insertRow(self.table.rowCount())
-                self.table.setCurrentCell(self.table.rowCount() - 1, 0)
+                self.table.selectRow(self.table.rowCount() - 1)
             self.setViewMode()
             self.fillTableRow(self.table.currentRow())
             self.switchForm()
@@ -198,9 +212,11 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.movieLabel.clear()        
         if self.movie:
             self.movie.stop()
-            del self.movie
+            self.movie = None
         self.textList.clear()
         self.textEdit.clear()
+        self.removeTextButton.setEnabled(False)
+        self.textEdit.setEnabled(False)  
                
     def fillSmileDetail(self):
         print "selected icon : ",  self.currentSmile
