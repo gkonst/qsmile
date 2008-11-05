@@ -60,6 +60,14 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.table.setCellWidget(row, 0, movieLabel)
         self.table.setCellWidget(row, 1, QtGui.QLabel(icon.image))
         self.table.setCellWidget(row, 2, QtGui.QLabel(" ".join(icon.text)))
+        
+    def clearTableRow(self,  row):
+        self.table.cellWidget(row, 0).movie().stop()
+        self.table.cellWidget(row, 0).clear()
+        self.table.removeCellWidget(row, 0)
+        self.table.removeCellWidget(row, 1)
+        self.table.removeCellWidget(row, 2)
+        self.movieList[row] = None
 
     @pyqtSignature("")
     def on_upSmileButton_clicked(self):
@@ -73,6 +81,9 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             
     def moveSmile(self, move):
         row = self.table.currentRow()
+        self.clearSmileDetail()
+        self.clearTableRow(row)
+        self.clearTableRow(move(row))
         # change filenames
         os.rename(os.path.join(options.TEMP_DIR, self.pack.icons[row].image), os.path.join(options.TEMP_DIR, self.pack.icons[row].image + ".tmp"))
         os.rename(os.path.join(options.TEMP_DIR, self.pack.icons[move(row)].image), os.path.join(options.TEMP_DIR, self.pack.icons[row].image))
@@ -101,17 +112,11 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         if not QtGui.QMessageBox.question(self, "Are you sure?", "Are you sure?", "Yes", "No"):
             self.table.scrollToTop()
             row = self.table.currentRow()
+            self.clearSmileDetail()
             self.table.selectRow(row - 1)
             icon = self.pack.icons[row]
-            #self.table.scrollToItem(self.table.cellWidget(i - 1, 0))
-            self.table.cellWidget(row, 0).movie().stop()
-            self.table.cellWidget(row, 0).clear()
-            self.table.removeCellWidget(row, 0)
-            self.table.removeCellWidget(row, 1)
-            self.table.removeCellWidget(row, 2)
-            del self.movieList[row]
+            self.clearTableRow(row)
             self.table.removeRow(row)
-            self.clearSmileDetail()
             if icon and icon.image and os.path.exists(os.path.join(options.TEMP_DIR, icon.image)):
                 os.remove(os.path.join(options.TEMP_DIR, icon.image))
             self.pack.deleteIcon(row)
@@ -154,7 +159,6 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     
     @pyqtSignature("")
     def on_textList_itemSelectionChanged(self):
-        print "count : ", self.textList.count()
         if self.textList.count() != 0:
             self.removeTextButton.setEnabled(True)
             self.textEdit.setEnabled(True)
