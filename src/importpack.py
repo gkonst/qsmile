@@ -24,20 +24,14 @@ Module contains various import methods.
 """
 import os
 from itertools import ifilter
-from shutil import rmtree
 from zipfile import ZipFile
 from model import Pack,  Icon
 import options
 from util import printTiming
 
-def initTempDir():
-    rmtree(options.TEMP_DIR)
-    os.mkdir(options.TEMP_DIR)
-
 @printTiming
 def importKopete(targetFile):
     print "import from kopete jisp started..."
-    initTempDir()
     zip = ZipFile(targetFile, "r")
     content = zip.read(filter(lambda item: item.endswith("icondef.xml"), zip.namelist())[0])
     pack = Pack()
@@ -73,7 +67,6 @@ def importKopete(targetFile):
 @printTiming
 def importPidginZip(targetFile):
     print "import from pidgin zip started..."
-    initTempDir()
     zip = ZipFile(targetFile, "r")
     content = zip.read(filter(lambda item: item.endswith("theme"), zip.namelist())[0])
     pack = Pack()
@@ -117,7 +110,6 @@ def importPidginZip(targetFile):
 @printTiming
 def importQipZip(targetFile):
     print "import from qip zip started..."
-    initTempDir()
     zipFile = ZipFile(targetFile, "r")
     defineEntry = filter(lambda item: item.endswith("_define.ini"), zipFile.namelist())[0]
     content = zipFile.read(defineEntry)
