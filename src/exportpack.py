@@ -52,6 +52,7 @@ def exportPidgin(pack, targetFile):
     zip.writestr(os.path.join(pack.name, "theme"), "".join(content))
     for icon in pack.icons:
         zip.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, icon.image))
+    zip.close()
     print "export to pidgin finished"
     
 @printTiming
@@ -71,6 +72,7 @@ def exportKopete(pack, targetFile):
     zip.writestr(os.path.join(pack.name, "icondef.xml"), content)
     for icon in pack.icons:
         zip.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, icon.image))
+    zip.close()
     print "export to kopete finished"
 
 def createKopeteXML(pack):
@@ -107,6 +109,7 @@ def exportQip(pack, targetFile):
     zip.writestr(os.path.join(pack.name, "Animated", "_define.ini"), "".join(content))
     for icon in pack.icons:
         zip.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, "Animated", icon.image))
+    zip.close()
     print "export to qip finished"
 
 @printTiming    

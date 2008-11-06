@@ -67,8 +67,19 @@ def importKopete(targetFile):
 @printTiming
 def importPidginZip(targetFile):
     print "import from pidgin zip started..."
-    zip = ZipFile(targetFile, "r")
-    content = zip.read(filter(lambda item: item.endswith("theme"), zip.namelist())[0])
+    pack =  importPidgin(targetFile, readContentFromZipFile)
+    print "import from pidgin zip finished"
+    return pack
+
+@printTiming
+def importPidginFolder(targetDir):
+    print "import from pidgin folder started..."
+    pack =  importPidgin(targetDir, readContentFromFile)
+    print "import from pidgin folder finished"
+    return pack
+    
+def importPidgin(targetPath, readFunction):
+    content = readFunction(targetPath, "theme")
     pack = Pack()
     smilePartStarted = False
     for line in ifilter(lambda line: line and not line.startswith("!"), content.split("\n")):
@@ -76,7 +87,6 @@ def importPidginZip(targetFile):
         if smilePartStarted:
             icon = Icon([], line.partition(" ")[0])
             texts = line.partition(" ")[2].strip().split(" ")
-            print "  texts : ", texts
             i = 0
             while i < len(texts):
                 text = ""
@@ -91,10 +101,7 @@ def importPidginZip(targetFile):
             print "  text : ", icon.text
             pack.addIcon(icon)
             print " importing image : ", icon.image
-            print zip.namelist()
-            imageEntry = filter(lambda item: item.endswith(icon.image), zip.namelist())[0]
-            print " from entry : ", imageEntry 
-            imageContent = zip.read(imageEntry)
+            imageContent = readFunction(targetPath, icon.image)
             fout = open(os.path.join(options.TEMP_DIR, icon.image),  "wb")
             fout.write(imageContent)
             fout.close()          
@@ -105,8 +112,7 @@ def importPidginZip(targetFile):
         elif "[default]" in line:
             smilePartStarted = True
     return pack
-    print "import from pidgin zip finished"
-    
+
 @printTiming
 def importQipZip(targetFile):
     print "import from qip zip started..."
@@ -129,3 +135,15 @@ def importQipZip(targetFile):
         pack.addIcon(icon) 
     return pack
     print "import from qip zip finished"
+
+def readContentFromFile(dir, file):
+    fin = open(os.path.join(dir, file))
+    content = fin.read()
+    fin.close()
+    return content
+
+def readContentFromZipFile(zipfile, entry):
+    zip = ZipFile(zipfile, "r")
+    content = zip.read(filter(lambda item: item.endswith(entry), zip.namelist())[0])
+    zip.close()
+    return content

@@ -13,7 +13,7 @@ from PyQt4.QtCore import pyqtSignature
 from model import Pack, Icon
 from common import ModeForm
 from exportpack import exportPidgin, exportKopete, exportQip, exportAll
-from importpack import importKopete, importPidginZip, importQipZip
+from importpack import importKopete, importPidginZip, importPidginFolder, importQipZip
 import options
 
 from ui.Ui_MainWindow import Ui_MainWindow
@@ -319,6 +319,15 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             self.clearAll()
             self.initTempDir()
             self.pack = importPidginZip(str(targetFile))
+            self.fillTable()
+    
+    @pyqtSignature("")        
+    def on_actionImport_From_Pidgin_Folder_triggered(self):
+        targetDir = QtGui.QFileDialog.getExistingDirectory(self, "Import From Pidgin Folder", os.path.expanduser('~'))
+        if targetDir:
+            self.clearAll()
+            self.initTempDir()
+            self.pack = importPidginFolder(str(targetDir))
             self.fillTable()
             
     @pyqtSignature("")
