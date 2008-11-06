@@ -105,7 +105,7 @@
      </property>
      <property name="icon" >
       <iconset resource="MainWindow.qrc" >
-       <normaloff>:/smileManager/images/accept32.png</normaloff>:/smileManager/images/accept32.png</iconset>
+       <normaloff>:/qsmile/images/accept32.png</normaloff>:/qsmile/images/accept32.png</iconset>
      </property>
      <property name="iconSize" >
       <size>
@@ -128,7 +128,7 @@
      </property>
      <property name="icon" >
       <iconset resource="MainWindow.qrc" >
-       <normaloff>:/smileManager/images/add32.png</normaloff>:/smileManager/images/add32.png</iconset>
+       <normaloff>:/qsmile/images/add32.png</normaloff>:/qsmile/images/add32.png</iconset>
      </property>
      <property name="iconSize" >
       <size>
@@ -154,7 +154,7 @@
      </property>
      <property name="icon" >
       <iconset resource="MainWindow.qrc" >
-       <normaloff>:/smileManager/images/delete32.png</normaloff>:/smileManager/images/delete32.png</iconset>
+       <normaloff>:/qsmile/images/delete32.png</normaloff>:/qsmile/images/delete32.png</iconset>
      </property>
      <property name="iconSize" >
       <size>
@@ -177,7 +177,7 @@
      </property>
      <property name="icon" >
       <iconset resource="MainWindow.qrc" >
-       <normaloff>:/smileManager/images/folder32.png</normaloff>:/smileManager/images/folder32.png</iconset>
+       <normaloff>:/qsmile/images/folder32.png</normaloff>:/qsmile/images/folder32.png</iconset>
      </property>
      <property name="iconSize" >
       <size>
@@ -200,7 +200,7 @@
      </property>
      <property name="icon" >
       <iconset resource="MainWindow.qrc" >
-       <normaloff>:/smileManager/images/close32.png</normaloff>:/smileManager/images/close32.png</iconset>
+       <normaloff>:/qsmile/images/close32.png</normaloff>:/qsmile/images/close32.png</iconset>
      </property>
      <property name="iconSize" >
       <size>
@@ -394,7 +394,7 @@
      </property>
      <property name="icon" >
       <iconset resource="MainWindow.qrc" >
-       <normaloff>:/smileManager/images/down32.png</normaloff>:/smileManager/images/down32.png</iconset>
+       <normaloff>:/qsmile/images/down32.png</normaloff>:/qsmile/images/down32.png</iconset>
      </property>
      <property name="iconSize" >
       <size>
@@ -414,7 +414,7 @@
      </property>
      <property name="icon" >
       <iconset resource="MainWindow.qrc" >
-       <normaloff>:/smileManager/images/delete32.png</normaloff>:/smileManager/images/delete32.png</iconset>
+       <normaloff>:/qsmile/images/delete32.png</normaloff>:/qsmile/images/delete32.png</iconset>
      </property>
      <property name="iconSize" >
       <size>
@@ -434,7 +434,7 @@
      </property>
      <property name="icon" >
       <iconset resource="MainWindow.qrc" >
-       <normaloff>:/smileManager/images/up32.png</normaloff>:/smileManager/images/up32.png</iconset>
+       <normaloff>:/qsmile/images/up32.png</normaloff>:/qsmile/images/up32.png</iconset>
      </property>
      <property name="iconSize" >
       <size>
@@ -454,7 +454,7 @@
      </property>
      <property name="icon" >
       <iconset resource="MainWindow.qrc" >
-       <normaloff>:/smileManager/images/add32.png</normaloff>:/smileManager/images/add32.png</iconset>
+       <normaloff>:/qsmile/images/add32.png</normaloff>:/qsmile/images/add32.png</iconset>
      </property>
      <property name="iconSize" >
       <size>
@@ -474,7 +474,7 @@
      </property>
      <property name="icon" >
       <iconset resource="MainWindow.qrc" >
-       <normaloff>:/smileManager/images/edit32.png</normaloff>:/smileManager/images/edit32.png</iconset>
+       <normaloff>:/qsmile/images/edit32.png</normaloff>:/qsmile/images/edit32.png</iconset>
      </property>
      <property name="iconSize" >
       <size>
