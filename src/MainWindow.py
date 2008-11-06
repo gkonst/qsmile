@@ -29,12 +29,14 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         QMainWindow.__init__(self, parent)
         ModeForm.__init__(self)
         self.setupUi(self)
-        self.movie = None       
-        #options.TEMP_DIR = tempfile.mkdtemp()
+        self.movie = None
+        self.movieList = []
+        self.currentSmile = None
+        self.pack = None
 
     def initTempDir(self):
         rmtree(options.TEMP_DIR)
-        os.mkdir(options.TEMP_DIR)
+        options.TEMP_DIR = tempfile.mkdtemp()
     
     def fillTable(self):
         print "options.TEMP_DIR : ", options.TEMP_DIR
