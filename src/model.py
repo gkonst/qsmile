@@ -72,9 +72,12 @@ class Pack(object):
                 return icon
 
     def generateIconFilename(self):
-        temp = list(self.icons[-1].image[0:-4])
-        if(ord(temp[1]) == 122):
-            temp[0] = chr(ord(temp[0]) + 1)
+        if self.icons:
+            temp = list(self.icons[-1].image[0:-4])
+            if(ord(temp[1]) == 122):
+                temp[0] = chr(ord(temp[0]) + 1)
+            else:
+                temp[1] = chr(ord(temp[1]) + 1)
+            return "".join(temp) + ".gif"
         else:
-            temp[1] = chr(ord(temp[1]) + 1)
-        return "".join(temp) + ".gif"
+            return "aa.gif"

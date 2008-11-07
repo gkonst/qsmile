@@ -6,14 +6,14 @@ Module implementing MainWindow.
 
 import os
 import tempfile
-from shutil import copyfile
+from shutil import copyfile, rmtree
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
-from model import Icon
+from model import Pack, Icon
 from common import ModeForm, getOpenFileName
 from exportpack import exportPidgin, exportKopete, exportQip, exportAll
-from importpack import importKopete, importPidginZip, importQipZip
+from importpack import importKopete, importPidginZip, importPidginFolder, importQipZip
 import options
 
 from ui.Ui_MainWindow import Ui_MainWindow
@@ -29,21 +29,28 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         QMainWindow.__init__(self, parent)
         ModeForm.__init__(self)
         self.setupUi(self)
-        self.movie = None       
-        #options.TEMP_DIR = tempfile.mkdtemp()
+        self.movie = None
+        self.movieList = []
+        self.currentSmile = None
+        self.pack = None
+
+    def initTempDir(self):
+        rmtree(options.TEMP_DIR)
+        options.TEMP_DIR = tempfile.mkdtemp()
     
     def fillTable(self):
-        print "options.TEMP_DIR : ", options.TEMP_DIR 
+        print "options.TEMP_DIR : ", options.TEMP_DIR
+        self.clearSmileDetail()
+        self.clearSmileList()
+        self.actionClose_pack.setEnabled(True) 
         self.menuExport.setEnabled(True)
         self.packBox.setEnabled(True)
         self.smileListBox.setEnabled(True)
         self.nameEdit.setText(self.pack.name)
         self.authorEdit.setText(self.pack.author)
         self.versionEdit.setText(self.pack.version)
-        self.table.clearContents()
-        self.table.setRowCount(len(self.pack.icons))
-        self.movieList = []
         for i in range(len(self.pack.icons)):
+            self.table.insertRow(i)
             self.fillTableRow(i)
         self.table.selectRow(0)
             
@@ -123,13 +130,14 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             
     @pyqtSignature("int, int, int, int")
     def on_table_currentCellChanged(self, currentRow, currentColumn, previousRow, previousColumn):
-        self.upSmileButton.setEnabled(currentRow > 0)
-        self.downSmileButton.setEnabled(currentRow < self.table.rowCount() - 1)
-        self.removeSmileButton.setEnabled(True)
-        self.editSmileButton.setEnabled(True)
-        self.currentSmile = self.pack.icons[self.table.currentRow()]
-        self.setViewMode()
-        self.fillSmileDetail()
+        if currentRow != -1:
+            self.upSmileButton.setEnabled(currentRow > 0)
+            self.downSmileButton.setEnabled(currentRow < self.table.rowCount() - 1)
+            self.removeSmileButton.setEnabled(True)
+            self.editSmileButton.setEnabled(True)
+            self.currentSmile = self.pack.icons[currentRow]
+            self.setViewMode()
+            self.fillSmileDetail()
         
     @pyqtSignature("int, int")
     def on_table_cellDoubleClicked(self, currentRow, currentColumn):
@@ -236,10 +244,42 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             self.textList.addItems(self.currentSmile.text)
             self.textList.setCurrentRow(0)
             self.textEdit.setText(self.textList.currentItem().text())
+    
+    def clearSmileList(self):
+        self.nameEdit.clear()
+        self.authorEdit.clear()
+        self.versionEdit.clear()
+        self.table.clearContents()
+        self.table.setRowCount(0)
+        self.movieList = []
+        self.upSmileButton.setEnabled(False)
+        self.downSmileButton.setEnabled(False)
+        self.removeSmileButton.setEnabled(False)
+        self.editSmileButton.setEnabled(False)
+            
+    def clearAll(self):
+        self.clearSmileDetail()
+        self.clearSmileList()
+        self.menuExport.setEnabled(False)
+        self.actionClose_pack.setEnabled(False)
+        self.packBox.setEnabled(False)
+        self.smileListBox.setEnabled(False)
+        self.smileDetailBox.setEnabled(False)
 
     def switchForm(self):
         self.smileDetailBox.setEnabled(not self.isViewMode())
         self.smileListBox.setEnabled(self.isViewMode())        
+
+    @pyqtSignature("")
+    def on_actionClose_pack_triggered(self):
+        self.clearAll()
+
+    @pyqtSignature("")
+    def on_actionNew_pack_triggered(self):
+        self.clearAll()
+        self.initTempDir()
+        self.pack = Pack()
+        self.fillTable()
 
     @pyqtSignature("")
     def on_actionExport_To_Kopete_triggered(self):
@@ -269,6 +309,8 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_actionImport_From_Kopete_triggered(self):
         targetFile = getOpenFileName(self, "Import From Kopete JISP", os.path.expanduser('~'), "Kopete Smile Pack JISP (*.jisp)")
         if targetFile:
+            self.clearAll()
+            self.initTempDir()
             self.pack = importKopete(str(targetFile))
             self.fillTable()
 
@@ -276,12 +318,25 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_actionImport_From_Pidgin_ZIP_triggered(self):
         targetFile = getOpenFileName(self, "Import From Pidgin ZIP", os.path.expanduser('~'), "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:
+            self.clearAll()
+            self.initTempDir()
             self.pack = importPidginZip(str(targetFile))
+            self.fillTable()
+    
+    @pyqtSignature("")        
+    def on_actionImport_From_Pidgin_Folder_triggered(self):
+        targetDir = QtGui.QFileDialog.getExistingDirectory(self, "Import From Pidgin Folder", os.path.expanduser('~'))
+        if targetDir:
+            self.clearAll()
+            self.initTempDir()
+            self.pack = importPidginFolder(str(targetDir))
             self.fillTable()
             
     @pyqtSignature("")
     def on_actionImport_From_QIP_ZIP_triggered(self):
         targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From QIP ZIP", os.path.expanduser('~'), "QIP Smile Pack ZIP (*.zip)")
         if targetFile:
+            self.clearAll()
+            self.initTempDir()
             self.pack = importQipZip(str(targetFile))
             self.fillTable()

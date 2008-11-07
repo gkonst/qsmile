@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="smileManager" >
+  <qresource prefix="qsmile" >
     <file>images/close32.png</file>
     <file>images/edit32.png</file>
     <file>images/folder32.png</file>
