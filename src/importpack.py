@@ -120,12 +120,12 @@ def importQipZip(targetFile):
     defineEntry = filter(lambda item: item.endswith("_define.ini"), zipFile.namelist())[0]
     content = zipFile.read(defineEntry)
     pack = Pack()
-    pack.name = defineEntry.partition(os.sep)[0]
+    pack.name = defineEntry.partition("/")[0]
     images = filter(lambda item: item.endswith(".gif"), zipFile.namelist())
     images.sort()
     for line, imageEntry in zip(content.split("\n"), images):
         print " line : ", line, " image : ", imageEntry
-        icon = Icon(line.split(","), imageEntry.rpartition(os.sep)[2])
+        icon = Icon(line.split(","), imageEntry.rpartition("/")[2])
         print " text : ", icon.text, " image : ", icon.image
         print " importing image : ", icon.image, " from entry : ", imageEntry 
         imageContent = zipFile.read(imageEntry)
