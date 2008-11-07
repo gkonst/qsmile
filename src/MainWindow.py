@@ -35,7 +35,8 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.pack = None
 
     def initTempDir(self):
-        rmtree(options.TEMP_DIR)
+        if options.TEMP_DIR:
+            rmtree(options.TEMP_DIR)
         options.TEMP_DIR = tempfile.mkdtemp()
     
     def fillTable(self):
@@ -265,6 +266,14 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.packBox.setEnabled(False)
         self.smileListBox.setEnabled(False)
         self.smileDetailBox.setEnabled(False)
+        
+    def closePack(self):
+        self.clearAll()
+        self.currentSmile = None
+        self.pack = None
+        if options.TEMP_DIR:
+            rmtree(options.TEMP_DIR)
+            options.TEMP_DIR = None
 
     def switchForm(self):
         self.smileDetailBox.setEnabled(not self.isViewMode())
@@ -272,7 +281,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
 
     @pyqtSignature("")
     def on_actionClose_pack_triggered(self):
-        self.clearAll()
+        self.closePack()
 
     @pyqtSignature("")
     def on_actionNew_pack_triggered(self):
@@ -309,7 +318,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_actionImport_From_Kopete_triggered(self):
         targetFile = getOpenFileName(self, "Import From Kopete JISP", os.path.expanduser('~'), "Kopete Smile Pack JISP (*.jisp)")
         if targetFile:
-            self.clearAll()
+            self.closePack()
             self.initTempDir()
             self.pack = importKopete(str(targetFile))
             self.fillTable()
@@ -318,7 +327,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_actionImport_From_Pidgin_ZIP_triggered(self):
         targetFile = getOpenFileName(self, "Import From Pidgin ZIP", os.path.expanduser('~'), "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:
-            self.clearAll()
+            self.closePack()
             self.initTempDir()
             self.pack = importPidginZip(str(targetFile))
             self.fillTable()
@@ -327,7 +336,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_actionImport_From_Pidgin_Folder_triggered(self):
         targetDir = QtGui.QFileDialog.getExistingDirectory(self, "Import From Pidgin Folder", os.path.expanduser('~'))
         if targetDir:
-            self.clearAll()
+            self.closePack()
             self.initTempDir()
             self.pack = importPidginFolder(str(targetDir))
             self.fillTable()
@@ -336,7 +345,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_actionImport_From_QIP_ZIP_triggered(self):
         targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From QIP ZIP", os.path.expanduser('~'), "QIP Smile Pack ZIP (*.zip)")
         if targetFile:
-            self.clearAll()
+            self.closePack()
             self.initTempDir()
             self.pack = importQipZip(str(targetFile))
             self.fillTable()
