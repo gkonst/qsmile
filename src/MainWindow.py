@@ -11,7 +11,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
 from model import Pack, Icon
-from common import ModeForm, getOpenFileName
+from common import ModeForm
 from exportpack import exportPidgin, exportKopete, exportQip, exportAll
 from importpack import importKopete, importPidginZip, importPidginFolder, importQipZip
 import options
@@ -148,7 +148,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         
     @pyqtSignature("")
     def on_changeImageButton_clicked(self):
-        imageFile = getOpenFileName(self, "Choose picture", os.path.expanduser('~'), "gif (*.gif)")
+        imageFile = QtGui.QFileDialog.getOpenFileName(self, "Choose picture", os.path.expanduser('~'), "gif (*.gif)")
         if imageFile:
             print "Opening image : ", imageFile
             self.movieLabel.clear()
@@ -316,7 +316,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         
     @pyqtSignature("")
     def on_actionImport_From_Kopete_triggered(self):
-        targetFile = getOpenFileName(self, "Import From Kopete JISP", os.path.expanduser('~'), "Kopete Smile Pack JISP (*.jisp)")
+        targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From Kopete JISP", os.path.expanduser('~'), "Kopete Smile Pack JISP (*.jisp)")
         if targetFile:
             self.closePack()
             self.initTempDir()
@@ -325,7 +325,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
 
     @pyqtSignature("")
     def on_actionImport_From_Pidgin_ZIP_triggered(self):
-        targetFile = getOpenFileName(self, "Import From Pidgin ZIP", os.path.expanduser('~'), "Pidgin Smile Pack ZIP (*.zip)")
+        targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From Pidgin ZIP", os.path.expanduser('~'), "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:
             self.closePack()
             self.initTempDir()
