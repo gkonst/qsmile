@@ -60,14 +60,14 @@ def exportKopete(pack, targetFile):
     print "export to kopete started..."
     packDocument = createKopeteXML(pack)
     content = ""
-    if not options.PRETTY_XML:
-        content = packDocument.toxml()
-    else:
+    try:
         import cStringIO as StringIO
         stream=StringIO.StringIO()
         from xml.dom.ext import PrettyPrint
         PrettyPrint(packDocument, stream)
         content = stream.getvalue()
+    except ImportError:
+        content = packDocument.toxml()
     zip = ZipFile(targetFile, "w")
     zip.writestr(os.path.join(pack.name, "icondef.xml"), content)
     for icon in pack.icons:
