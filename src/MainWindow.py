@@ -11,7 +11,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
 from model import Icon
-from common import ModeForm
+from common import ModeForm, getOpenFileName
 from exportpack import exportPidgin, exportKopete, exportQip, exportAll
 from importpack import importKopete, importPidginZip, importQipZip
 import options
@@ -139,7 +139,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         
     @pyqtSignature("")
     def on_changeImageButton_clicked(self):
-        imageFile = QtGui.QFileDialog.getOpenFileName(self, "Choose picture", os.path.expanduser('~'), "gif (*.gif)")
+        imageFile = getOpenFileName(self, "Choose picture", os.path.expanduser('~'), "gif (*.gif)")
         if imageFile:
             print "Opening image : ", imageFile
             self.movieLabel.clear()
@@ -184,15 +184,15 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     
     @pyqtSignature("")
     def on_saveButton_clicked(self):
+        self.currentSmile.text = []
+        for i in range(self.textList.count()):
+            self.currentSmile.text.append(str(self.textList.item(i).text()))
         if self.currentSmile.validateIcon():
             # copying image      
             if self.currentSmile.image == None or self.movie.fileName() != os.path.join(options.TEMP_DIR, self.currentSmile.image): 
                 print "fileName : ", self.movie.fileName()
                 copyfile(self.movie.fileName(), os.path.join(options.TEMP_DIR, self.currentSmile.image))
             # updating text
-            self.currentSmile.text = []
-            for i in range(self.textList.count()):
-                self.currentSmile.text.append(str(self.textList.item(i).text()))
             print self.currentSmile.text
             if self.isCreateMode():
                 self.pack.addIcon(self.currentSmile)
@@ -267,14 +267,14 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         
     @pyqtSignature("")
     def on_actionImport_From_Kopete_triggered(self):
-        targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From Kopete JISP", os.path.expanduser('~'), "Kopete Smile Pack JISP (*.jisp)")
+        targetFile = getOpenFileName(self, "Import From Kopete JISP", os.path.expanduser('~'), "Kopete Smile Pack JISP (*.jisp)")
         if targetFile:
             self.pack = importKopete(str(targetFile))
             self.fillTable()
 
     @pyqtSignature("")
     def on_actionImport_From_Pidgin_ZIP_triggered(self):
-        targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From Pidgin ZIP", os.path.expanduser('~'), "Pidgin Smile Pack ZIP (*.zip)")
+        targetFile = getOpenFileName(self, "Import From Pidgin ZIP", os.path.expanduser('~'), "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:
             self.pack = importPidginZip(str(targetFile))
             self.fillTable()

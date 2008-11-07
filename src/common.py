@@ -20,7 +20,7 @@
 #    along with qsmile.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
-Module contains common functionality classes.
+Module contains common functionality classes and functions.
 """
 class ModeForm(object):
     """
@@ -46,3 +46,11 @@ class ModeForm(object):
 
     def setViewMode(self):
         self.mode = "view"
+
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import QString
+def getOpenFileName(parent = None, caption = QString(), dir = QString(), filter = QString()):
+        fd= QtGui.QFileDialog(parent, caption, dir, filter)
+        fd.setFileMode(QtGui.QFileDialog.ExistingFile)
+        if fd.exec_():
+            return fd.selectedFiles()[0]
