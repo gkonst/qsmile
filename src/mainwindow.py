@@ -16,7 +16,7 @@ from exportpack import export_pidgin, export_kopete, export_qip, export_all
 from importpack import import_kopete, import_pidgin_zip, import_pidgin_folder, import_qip_zip
 import options
 
-from ui.Ui_MainWindow import Ui_MainWindow
+from ui.Ui_mainwindow import Ui_MainWindow
 
 class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     """

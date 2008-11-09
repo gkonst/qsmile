@@ -104,7 +104,7 @@
       <string/>
      </property>
      <property name="icon" >
-      <iconset resource="MainWindow.qrc" >
+      <iconset resource="mainwindow.qrc" >
        <normaloff>:/qsmile/images/accept32.png</normaloff>:/qsmile/images/accept32.png</iconset>
      </property>
      <property name="iconSize" >
@@ -127,7 +127,7 @@
       <string/>
      </property>
      <property name="icon" >
-      <iconset resource="MainWindow.qrc" >
+      <iconset resource="mainwindow.qrc" >
        <normaloff>:/qsmile/images/add32.png</normaloff>:/qsmile/images/add32.png</iconset>
      </property>
      <property name="iconSize" >
@@ -153,7 +153,7 @@
       <string/>
      </property>
      <property name="icon" >
-      <iconset resource="MainWindow.qrc" >
+      <iconset resource="mainwindow.qrc" >
        <normaloff>:/qsmile/images/delete32.png</normaloff>:/qsmile/images/delete32.png</iconset>
      </property>
      <property name="iconSize" >
@@ -176,7 +176,7 @@
       <string/>
      </property>
      <property name="icon" >
-      <iconset resource="MainWindow.qrc" >
+      <iconset resource="mainwindow.qrc" >
        <normaloff>:/qsmile/images/folder32.png</normaloff>:/qsmile/images/folder32.png</iconset>
      </property>
      <property name="iconSize" >
@@ -199,7 +199,7 @@
       <string/>
      </property>
      <property name="icon" >
-      <iconset resource="MainWindow.qrc" >
+      <iconset resource="mainwindow.qrc" >
        <normaloff>:/qsmile/images/close32.png</normaloff>:/qsmile/images/close32.png</iconset>
      </property>
      <property name="iconSize" >
@@ -393,7 +393,7 @@
       </rect>
      </property>
      <property name="icon" >
-      <iconset resource="MainWindow.qrc" >
+      <iconset resource="mainwindow.qrc" >
        <normaloff>:/qsmile/images/down32.png</normaloff>:/qsmile/images/down32.png</iconset>
      </property>
      <property name="iconSize" >
@@ -413,7 +413,7 @@
       </rect>
      </property>
      <property name="icon" >
-      <iconset resource="MainWindow.qrc" >
+      <iconset resource="mainwindow.qrc" >
        <normaloff>:/qsmile/images/delete32.png</normaloff>:/qsmile/images/delete32.png</iconset>
      </property>
      <property name="iconSize" >
@@ -433,7 +433,7 @@
       </rect>
      </property>
      <property name="icon" >
-      <iconset resource="MainWindow.qrc" >
+      <iconset resource="mainwindow.qrc" >
        <normaloff>:/qsmile/images/up32.png</normaloff>:/qsmile/images/up32.png</iconset>
      </property>
      <property name="iconSize" >
@@ -453,7 +453,7 @@
       </rect>
      </property>
      <property name="icon" >
-      <iconset resource="MainWindow.qrc" >
+      <iconset resource="mainwindow.qrc" >
        <normaloff>:/qsmile/images/add32.png</normaloff>:/qsmile/images/add32.png</iconset>
      </property>
      <property name="iconSize" >
@@ -473,7 +473,7 @@
       </rect>
      </property>
      <property name="icon" >
-      <iconset resource="MainWindow.qrc" >
+      <iconset resource="mainwindow.qrc" >
        <normaloff>:/qsmile/images/edit32.png</normaloff>:/qsmile/images/edit32.png</iconset>
      </property>
      <property name="iconSize" >
@@ -588,7 +588,7 @@
   </action>
  </widget>
  <resources>
-  <include location="MainWindow.qrc" />
+  <include location="mainwindow.qrc" />
  </resources>
  <connections/>
 </ui>
