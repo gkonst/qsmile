@@ -3,7 +3,7 @@
 import sys
 
 from PyQt4.QtGui import QApplication
-from MainWindow import MainWindow
+from mainwindow import MainWindow
 
 
 def main() :
