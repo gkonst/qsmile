@@ -30,7 +30,7 @@ class Icon(object):
         self.text = text
         self.image = image
 
-    def addText(self, text):
+    def add_text(self, text):
         #print self.text
         #print type(text)
         self.text.append(text)
@@ -39,7 +39,7 @@ class Icon(object):
     def __str__(self):
         return "Icon(image=" + str(self.image) + ", text=" + str(self.text) + ")"
     
-    def validateIcon(self):
+    def validate_icon(self):
         if not self.image:
             return False
         elif not self.text:
@@ -60,10 +60,10 @@ class Pack(object):
         self.desc = ""
         self.created = ""
         
-    def addIcon(self, icon):
+    def add_icon(self, icon):
         self.icons.append(icon)
         
-    def deleteIcon(self, i):
+    def delete_icon(self, i):
         del self.icons[i]
         
     def find(self, image):
@@ -71,7 +71,7 @@ class Pack(object):
             if icon.image == image:
                 return icon
 
-    def generateIconFilename(self):
+    def generate_icon_filename(self):
         if self.icons:
             temp = list(self.icons[-1].image[0:-4])
             if(ord(temp[1]) == 122):

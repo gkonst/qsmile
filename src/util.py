@@ -22,7 +22,7 @@
 Module contains various utility methods.
 """
 import time
-def printTiming(func):
+def timing(func):
     def wrapper(*arg):
         t1 = time.time()
         res = func(*arg)

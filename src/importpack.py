@@ -27,13 +27,13 @@ from itertools import ifilter
 from zipfile import ZipFile
 from model import Pack,  Icon
 import options
-from util import printTiming
+from util import timing
 
-@printTiming
-def importKopete(targetFile):
+@timing
+def import_kopete(target_file):
     print "import from kopete jisp started..."
-    zip = ZipFile(targetFile, "r")
-    content = zip.read(filter(lambda item: item.endswith("icondef.xml"), zip.namelist())[0])
+    zip_file = ZipFile(target_file, "r")
+    content = zip_file.read(filter(lambda item: item.endswith("icondef.xml"), zip_file.namelist())[0])
     pack = Pack()
     try:
         from xml.dom.ext.reader import PyExpat
@@ -41,50 +41,50 @@ def importKopete(targetFile):
     except ImportError:
         from xml.dom.minidom import parseString
         dom = parseString(content)
-    xmlMeta = dom.getElementsByTagName("meta")
-    if xmlMeta:
-        xmlName = xmlMeta[0].getElementsByTagName("name")
-        if xmlName:
-            pack.name = str(xmlName[0].firstChild.data)
+    xml_meta = dom.getElementsByTagName("meta")
+    if xml_meta:
+        xml_name = xml_meta[0].getElementsByTagName("name")
+        if xml_name:
+            pack.name = str(xml_name[0].firstChild.data)
             print " pack name : ",  pack.name
-    xmlIcons = dom.getElementsByTagName("icon")
-    for xmlIicon in xmlIcons:
-        icon = Icon([], str(xmlIicon.getElementsByTagName("object")[0].firstChild.data))
-        pack.addIcon(icon)
-        for text in xmlIicon.getElementsByTagName("text"):
-            icon.addText(str(text.firstChild.data))
+    xml_icons = dom.getElementsByTagName("icon")
+    for xml_icon in xml_icons:
+        icon = Icon([], str(xml_icon.getElementsByTagName("object")[0].firstChild.data))
+        pack.add_icon(icon)
+        for text in xml_icon.getElementsByTagName("text"):
+            icon.add_text(str(text.firstChild.data))
             #print text.firstChild.data
     for icon in pack.icons:
-        imageEntry = filter(lambda item: item.endswith(icon.image), zip.namelist())[0]
-        print " importing image : ", icon.image, " from entry : ", imageEntry 
-        imageContent = zip.read(imageEntry)
+        image_entry = filter(lambda item: item.endswith(icon.image), zip_file.namelist())[0]
+        print " importing image : ", icon.image, " from entry : ", image_entry 
+        image_content = zip_file.read(image_entry)
         fout = open(os.path.join(options.TEMP_DIR, icon.image),  "wb")
-        fout.write(imageContent)
+        fout.write(image_content)
         fout.close()
     return pack;
     print "import from kopete jisp finished"
 
-@printTiming
-def importPidginZip(targetFile):
+@timing
+def import_pidgin_zip(target_file):
     print "import from pidgin zip started..."
-    pack =  importPidgin(targetFile, readContentFromZipFile)
+    pack =  _import_pidgin(target_file, _read_content_from_zip)
     print "import from pidgin zip finished"
     return pack
 
-@printTiming
-def importPidginFolder(targetDir):
+@timing
+def import_pidgin_folder(target_dir):
     print "import from pidgin folder started..."
-    pack =  importPidgin(targetDir, readContentFromFile)
+    pack =  _import_pidgin(target_dir, _read_content_from_file)
     print "import from pidgin folder finished"
     return pack
     
-def importPidgin(targetPath, readFunction):
-    content = readFunction(targetPath, "theme")
+def _import_pidgin(target_path, read_function):
+    content = read_function(target_path, "theme")
     pack = Pack()
-    smilePartStarted = False
+    smile_part_started = False
     for line in ifilter(lambda line: line and not line.startswith("!"), content.split("\n")):
         line = line.replace("\t", " ")
-        if smilePartStarted:
+        if smile_part_started:
             icon = Icon([], line.partition(" ")[0])
             texts = line.partition(" ")[2].strip().split(" ")
             i = 0
@@ -97,53 +97,53 @@ def importPidgin(targetPath, readFunction):
                 else:
                     text = texts[i]
                     i += 1
-                icon.addText(text.replace("\\\\", "\\"))
+                icon.add_text(text.replace("\\\\", "\\"))
             print "  text : ", icon.text
-            pack.addIcon(icon)
+            pack.add_icon(icon)
             print " importing image : ", icon.image
-            imageContent = readFunction(targetPath, icon.image)
+            image_content = read_function(target_path, icon.image)
             fout = open(os.path.join(options.TEMP_DIR, icon.image),  "wb")
-            fout.write(imageContent)
+            fout.write(image_content)
             fout.close()          
         elif "Name=" in line:
             pack.name = line.partition("=")[2].strip()
         elif "Author=" in line:
             pack.author = line.partition("=")[2].strip()
         elif "[default]" in line:
-            smilePartStarted = True
+            smile_part_started = True
     return pack
 
-@printTiming
-def importQipZip(targetFile):
+@timing
+def import_qip_zip(target_file):
     print "import from qip zip started..."
-    zipFile = ZipFile(targetFile, "r")
-    defineEntry = filter(lambda item: item.endswith("_define.ini"), zipFile.namelist())[0]
-    content = zipFile.read(defineEntry)
+    zip_file = ZipFile(target_file, "r")
+    define_entry = filter(lambda item: item.endswith("_define.ini"), zip_file.namelist())[0]
+    content = zip_file.read(define_entry)
     pack = Pack()
-    pack.name = defineEntry.partition("/")[0]
-    images = filter(lambda item: item.endswith(".gif"), zipFile.namelist())
+    pack.name = define_entry.partition("/")[0]
+    images = filter(lambda item: item.endswith(".gif"), zip_file.namelist())
     images.sort()
-    for line, imageEntry in zip(content.split("\n"), images):
-        print " line : ", line, " image : ", imageEntry
-        icon = Icon(line.split(","), imageEntry.rpartition("/")[2])
+    for line, image_entry in zip_file(content.split("\n"), images):
+        print " line : ", line, " image : ", image_entry
+        icon = Icon(line.split(","), image_entry.rpartition("/")[2])
         print " text : ", icon.text, " image : ", icon.image
-        print " importing image : ", icon.image, " from entry : ", imageEntry 
-        imageContent = zipFile.read(imageEntry)
+        print " importing image : ", icon.image, " from entry : ", image_entry 
+        image_content = zip_file.read(image_entry)
         fout = open(os.path.join(options.TEMP_DIR, icon.image),  "wb")
-        fout.write(imageContent)
+        fout.write(image_content)
         fout.close()
-        pack.addIcon(icon) 
+        pack.add_icon(icon) 
     return pack
     print "import from qip zip finished"
 
-def readContentFromFile(dir, file):
+def _read_content_from_file(dir, file):
     fin = open(os.path.join(dir, file))
     content = fin.read()
     fin.close()
     return content
 
-def readContentFromZipFile(zipfile, entry):
-    zip = ZipFile(zipfile, "r")
-    content = zip.read(filter(lambda item: item.endswith(entry), zip.namelist())[0])
-    zip.close()
+def _read_content_from_zip(file, entry):
+    zip_file = ZipFile(file, "r")
+    content = zip_file.read(filter(lambda item: item.endswith(entry), zip_file.namelist())[0])
+    zip_file.close()
     return content

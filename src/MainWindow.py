@@ -12,8 +12,8 @@ from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
 from model import Pack, Icon
 from common import ModeForm
-from exportpack import exportPidgin, exportKopete, exportQip, exportAll
-from importpack import importKopete, importPidginZip, importPidginFolder, importQipZip
+from exportpack import export_pidgin, export_kopete, export_qip, export_all
+from importpack import import_kopete, import_pidgin_zip, import_pidgin_folder, import_qip_zip
 import options
 
 from ui.Ui_MainWindow import Ui_MainWindow
@@ -105,7 +105,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
 
     @pyqtSignature("")
     def on_addSmileButton_clicked(self):
-        self.currentSmile = Icon([], self.pack.generateIconFilename())
+        self.currentSmile = Icon([], self.pack.generate_icon_filename())
         self.setCreateMode()
         self.fillSmileDetail()
         
@@ -127,7 +127,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             self.table.removeRow(row)
             if icon and icon.image and os.path.exists(os.path.join(options.TEMP_DIR, icon.image)):
                 os.remove(os.path.join(options.TEMP_DIR, icon.image))
-            self.pack.deleteIcon(row)
+            self.pack.delete_icon(row)
             
     @pyqtSignature("int, int, int, int")
     def on_table_currentCellChanged(self, currentRow, currentColumn, previousRow, previousColumn):
@@ -196,7 +196,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.currentSmile.text = []
         for i in range(self.textList.count()):
             self.currentSmile.text.append(str(self.textList.item(i).text()))
-        if self.currentSmile.validateIcon():
+        if self.currentSmile.validate_icon():
             # copying image      
             if self.currentSmile.image == None or self.movie.fileName() != os.path.join(options.TEMP_DIR, self.currentSmile.image): 
                 print "fileName : ", self.movie.fileName()
@@ -204,7 +204,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             # updating text
             print self.currentSmile.text
             if self.isCreateMode():
-                self.pack.addIcon(self.currentSmile)
+                self.pack.add_icon(self.currentSmile)
                 self.table.insertRow(self.table.rowCount())
                 self.table.selectRow(self.table.rowCount() - 1)
             self.setViewMode()
@@ -294,25 +294,25 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_actionExport_To_Kopete_triggered(self):
         targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Kopete JISP", self.pack.name + ".jisp", "Kopete Smile Pack JISP (*.jisp)")
         if targetFile:
-            exportKopete(self.pack, str(targetFile))
+            export_kopete(self.pack, str(targetFile))
         
     @pyqtSignature("")
     def on_actionExport_To_Pidgin_triggered(self):
         targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Pidgin ZIP", self.pack.name + "_pidgin.zip", "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:    
-            exportPidgin(self.pack, str(targetFile))
+            export_pidgin(self.pack, str(targetFile))
         
     @pyqtSignature("")
     def on_actionExport_To_Qip_triggered(self):
         targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to QIP ZIP", self.pack.name + "_qip.zip", "QIP Smile Pack ZIP (*.zip)")
         if targetFile:
-            exportQip(self.pack, str(targetFile))
+            export_qip(self.pack, str(targetFile))
 
     @pyqtSignature("")
     def on_actionExport_To_All_triggered(self):
         targetDir = QtGui.QFileDialog.getExistingDirectory(self, "Export to All", os.path.expanduser('~'))
         if targetDir:
-            exportAll(self.pack, str(targetDir))
+            export_all(self.pack, str(targetDir))
         
     @pyqtSignature("")
     def on_actionImport_From_Kopete_triggered(self):
@@ -320,7 +320,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         if targetFile:
             self.closePack()
             self.initTempDir()
-            self.pack = importKopete(str(targetFile))
+            self.pack = import_kopete(str(targetFile))
             self.fillTable()
 
     @pyqtSignature("")
@@ -329,7 +329,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         if targetFile:
             self.closePack()
             self.initTempDir()
-            self.pack = importPidginZip(str(targetFile))
+            self.pack = import_pidgin_zip(str(targetFile))
             self.fillTable()
     
     @pyqtSignature("")        
@@ -338,7 +338,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         if targetDir:
             self.closePack()
             self.initTempDir()
-            self.pack = importPidginFolder(str(targetDir))
+            self.pack = import_pidgin_folder(str(targetDir))
             self.fillTable()
             
     @pyqtSignature("")
@@ -347,5 +347,5 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         if targetFile:
             self.closePack()
             self.initTempDir()
-            self.pack = importQipZip(str(targetFile))
+            self.pack = import_qip_zip(str(targetFile))
             self.fillTable()

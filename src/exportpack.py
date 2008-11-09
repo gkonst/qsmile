@@ -27,10 +27,10 @@ from itertools import ifilter
 from xml.dom import getDOMImplementation
 from zipfile import ZipFile
 import options
-from util import printTiming
+from util import timing
 
-@printTiming
-def exportPidgin(pack, targetFile):
+@timing
+def export_pidgin(pack, target_file):
     print "export to pidgin started..."
     content = ["Name=%s\n"  % pack.name]
     if pack.author:
@@ -46,74 +46,69 @@ def exportPidgin(pack, targetFile):
         for i, text in enumerate(ifilter(lambda text: " " in text, icon.text)):
             # TODO may be bad
             icon.text[i] = text.replace(" ","\\ ")
-        fullText = icon.image + " " + " ".join(icon.text) + "\n"
-        content.append(fullText)
-    zip = ZipFile(targetFile, "w")
-    zip.writestr(os.path.join(pack.name, "theme"), "".join(content))
+        full_text = icon.image + " " + " ".join(icon.text) + "\n"
+        content.append(full_text)
+    zip_file = ZipFile(target_file, "w")
+    zip_file.writestr(os.path.join(pack.name, "theme"), "".join(content))
     for icon in pack.icons:
-        zip.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, icon.image))
-    zip.close()
+        zip_file.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, icon.image))
+    zip_file.close()
     print "export to pidgin finished"
     
-@printTiming
-def exportKopete(pack, targetFile):
+@timing
+def export_kopete(pack, target_file):
     print "export to kopete started..."
-    packDocument = createKopeteXML(pack)
+    pack_document = getDOMImplementation(options.DOM_IMPL).createDocument(None, "icondef", None)
+    meta_element = pack_document.createElement("meta")
+    if pack.name:
+        name_element = pack_document.createElement("name")
+        name_element.appendChild(pack_document.createTextNode(pack.name))
+        meta_element.appendChild(name_element)
+    pack_document.documentElement.appendChild(meta_element)
+    for icon in pack.icons:
+        icon_element = pack_document.createElement("icon")
+        image_element = pack_document.createElement("object")
+        image_element.setAttribute("mime", "image/gif")
+        icon_element.appendChild(image_element)
+        image_text = pack_document.createTextNode(icon.image)
+        image_element.appendChild(image_text)
+        for text in icon.text:
+            text_element = pack_document.createElement("text")
+            icon_element.appendChild(text_element)
+            text_text = pack_document.createTextNode(text)
+            text_element.appendChild(text_text)
+        pack_document.documentElement.appendChild(icon_element)
     content = ""
     try:
         import cStringIO as StringIO
         stream=StringIO.StringIO()
         from xml.dom.ext import PrettyPrint
-        PrettyPrint(packDocument, stream)
+        PrettyPrint(pack_document, stream)
         content = stream.getvalue()
     except ImportError:
-        content = packDocument.toxml()
-    zip = ZipFile(targetFile, "w")
-    zip.writestr(os.path.join(pack.name, "icondef.xml"), content)
+        content = pack_document.toxml()
+    zip_file = ZipFile(target_file, "w")
+    zip_file.writestr(os.path.join(pack.name, "icondef.xml"), content)
     for icon in pack.icons:
-        zip.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, icon.image))
-    zip.close()
+        zip_file.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, icon.image))
+    zip_file.close()
     print "export to kopete finished"
 
-def createKopeteXML(pack):
-    impl = getDOMImplementation(options.DOM_IMPL)
-    packDocument = impl.createDocument(None, "icondef", None)
-    metaElement = packDocument.createElement("meta")
-    if pack.name:
-        nameElement = packDocument.createElement("name")
-        nameElement.appendChild(packDocument.createTextNode(pack.name))
-        metaElement.appendChild(nameElement)
-    packDocument.documentElement.appendChild(metaElement)
-    for icon in pack.icons:
-        iconElement = packDocument.createElement("icon")
-        imageElement = packDocument.createElement("object")
-        imageElement.setAttribute("mime", "image/gif")
-        iconElement.appendChild(imageElement)
-        imageText = packDocument.createTextNode(icon.image)
-        imageElement.appendChild(imageText)
-        for text in icon.text:
-            textElement = packDocument.createElement("text")
-            iconElement.appendChild(textElement)
-            textText = packDocument.createTextNode(text)
-            textElement.appendChild(textText)
-        packDocument.documentElement.appendChild(iconElement)
-    return packDocument
-
-@printTiming
-def exportQip(pack, targetFile):
+@timing
+def export_qip(pack, target_file):
     print "export to qip started..."
     content = []
     for icon in pack.icons:
         content.append(",".join(icon.text) + "\n")
-    zip = ZipFile(targetFile, "w")
-    zip.writestr(os.path.join(pack.name, "Animated", "_define.ini"), "".join(content))
+    zip_file = ZipFile(target_file, "w")
+    zip_file.writestr(os.path.join(pack.name, "Animated", "_define.ini"), "".join(content))
     for icon in pack.icons:
-        zip.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, "Animated", icon.image))
-    zip.close()
+        zip_file.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, "Animated", icon.image))
+    zip_file.close()
     print "export to qip finished"
 
-@printTiming    
-def exportAll(pack, targetDir):
-    exportKopete(pack, os.path.join(targetDir, pack.name + ".jisp"))
-    exportPidgin(pack, os.path.join(targetDir, pack.name + "_pidgin.zip"))
-    exportQip(pack, os.path.join(targetDir, pack.name + "_qip.zip"))
+@timing    
+def export_all(pack, target_dir):
+    export_kopete(pack, os.path.join(target_dir, pack.name + ".jisp"))
+    export_pidgin(pack, os.path.join(target_dir, pack.name + "_pidgin.zip"))
+    export_qip(pack, os.path.join(target_dir, pack.name + "_qip.zip"))
