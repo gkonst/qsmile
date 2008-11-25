@@ -25,8 +25,14 @@ Module contains common functionality classes and functions.
 class ModeForm(object):
     """
     Class incapsulates mode operations for form.
+    
+    Mode is used in form to represent it state in application lifecycle.
+    Now supported modes are: view, edit, create.
     """
     def __init__(self):
+        """
+        Initializes for with default mode (None).
+        """
         self.mode = None
         
     def isEditMode(self):
@@ -46,11 +52,3 @@ class ModeForm(object):
 
     def setViewMode(self):
         self.mode = "view"
-
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QString
-def getOpenFileName(parent = None, caption = QString(), dir = QString(), filter = QString()):
-        fd= QtGui.QFileDialog(parent, caption, dir, filter)
-        fd.setFileMode(QtGui.QFileDialog.ExistingFile)
-        if fd.exec_():
-            return fd.selectedFiles()[0]

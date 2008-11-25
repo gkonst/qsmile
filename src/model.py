@@ -24,22 +24,35 @@ Module contains model classes.
 """
 class Icon(object):
     """
-    Class represents smile. Contains image name and text smile definitions. 
+    Class represents smile.
+    
+    Contains image name and text smile definitions. 
     """
-    def __init__(self, text , image=None):
+    def __init__(self, text, image=None):
+        """
+        Initializes icon instance with specific text and image (None by default).
+        """
         self.text = text
         self.image = image
 
     def add_text(self, text):
-        #print self.text
-        #print type(text)
+        """
+        Adds text element to current icon.
+        """
         self.text.append(text)
-        #print type(self.text[0])
-        #print self.text
+        
     def __str__(self):
+        """
+        Returns image and text.
+        """
         return "Icon(image=" + str(self.image) + ", text=" + str(self.text) + ")"
     
     def validate_icon(self):
+        """
+        Validates icon.
+        
+        Checks image and text for emptiness.
+        """
         if not self.image:
             return False
         elif not self.text:
@@ -49,7 +62,9 @@ class Icon(object):
     
 class Pack(object):
     """
-    Class represents smile pack. Contains pack info and smileys. 
+    Class represents smile pack.
+    
+    Contains pack info and smileys. 
     """
     def __init__(self):
         self.icons = []
@@ -61,17 +76,23 @@ class Pack(object):
         self.created = ""
         
     def add_icon(self, icon):
+        """
+        Adds icon to pack.
+        """
         self.icons.append(icon)
         
     def delete_icon(self, i):
+        """
+        Deletes icon form pack.
+        """
         del self.icons[i]
-        
-    def find(self, image):
-        for icon in self.icons:
-            if icon.image == image:
-                return icon
 
     def generate_icon_filename(self):
+        """
+        Generates icon image filename.
+        
+        Image names is generated as sequence from characters, like 'aa', 'bb', etc.
+        """
         if self.icons:
             temp = list(self.icons[-1].image[0:-4])
             if(ord(temp[1]) == 122):
