@@ -26,12 +26,12 @@ import os
 from itertools import ifilter
 from zipfile import ZipFile
 from model import Pack,  Icon
-import options
-from util import timing
+import config
+from util import timing, log
 
 @timing
 def import_kopete(target_file):
-    print "import from kopete jisp started..."
+    log.debug("import from kopete jisp started...")
     zip_file = ZipFile(target_file, "r")
     content = zip_file.read(filter(lambda item: item.endswith("icondef.xml"), zip_file.namelist())[0])
     pack = Pack()
@@ -46,23 +46,22 @@ def import_kopete(target_file):
         xml_name = xml_meta[0].getElementsByTagName("name")
         if xml_name:
             pack.name = str(xml_name[0].firstChild.data)
-            print " pack name : ",  pack.name
+            log.debug(" pack name : %s",  pack.name)
     xml_icons = dom.getElementsByTagName("icon")
     for xml_icon in xml_icons:
         icon = Icon([], str(xml_icon.getElementsByTagName("object")[0].firstChild.data))
         pack.add_icon(icon)
         for text in xml_icon.getElementsByTagName("text"):
             icon.add_text(str(text.firstChild.data))
-            #print text.firstChild.data
     for icon in pack.icons:
         image_entry = filter(lambda item: item.endswith(icon.image), zip_file.namelist())[0]
-        print " importing image : ", icon.image, " from entry : ", image_entry 
+        log.debug(" importing image : %s from entry : %s", icon.image, image_entry) 
         image_content = zip_file.read(image_entry)
-        fout = open(os.path.join(options.TEMP_DIR, icon.image),  "wb")
+        fout = open(os.path.join(config.temp_dir, icon.image),  "wb")
         fout.write(image_content)
         fout.close()
+    log.debug("import from kopete jisp finished")
     return pack;
-    print "import from kopete jisp finished"
 
 @timing
 def import_pidgin_zip(target_file):
@@ -102,7 +101,7 @@ def _import_pidgin(target_path, read_function):
             pack.add_icon(icon)
             print " importing image : ", icon.image
             image_content = read_function(target_path, icon.image)
-            fout = open(os.path.join(options.TEMP_DIR, icon.image),  "wb")
+            fout = open(os.path.join(config.temp_dir, icon.image),  "wb")
             fout.write(image_content)
             fout.close()          
         elif "Name=" in line:
@@ -129,7 +128,7 @@ def import_qip_zip(target_file):
         print " text : ", icon.text, " image : ", icon.image
         print " importing image : ", icon.image, " from entry : ", image_entry 
         image_content = zip_file.read(image_entry)
-        fout = open(os.path.join(options.TEMP_DIR, icon.image),  "wb")
+        fout = open(os.path.join(config.temp_dir, icon.image),  "wb")
         fout.write(image_content)
         fout.close()
         pack.add_icon(icon) 

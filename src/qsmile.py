@@ -1,6 +1,7 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#    src/util.py
+#    src/qsmile.py
 #
 #    Copyright (C) 2008 Konstantin Grigoriev
 #
@@ -18,24 +19,17 @@
 #    
 #    You should have received a copy of the GNU General Public License
 #    along with qsmile.  If not, see <http://www.gnu.org/licenses/>.
-"""
-Module contains various utility methods.
-"""
-import time
-import logging
+#
+import sys
+
+from PyQt4.QtGui import QApplication
+from mainwindow import MainWindow
 
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="[%(levelname)-1s] %(asctime)s %(module)s:%(funcName)s:%(lineno)d - %(message)s"
-)
-log = logging.getLogger("qsmile") 
-
-def timing(func):
-    def timing(*arg):
-        t1 = time.time()
-        res = func(*arg)
-        t2 = time.time()
-        log.debug("*** %s took %0.3f s or %0.3f ms" % (func.func_name, (t2 - t1), (t2 - t1) * 1000.0))
-        return res
-    return timing
+def main() :
+    app = QApplication(sys.argv)
+    wnd = MainWindow()
+    wnd.show()
+    sys.exit(app.exec_())
+if __name__ == '__main__':
+    main()

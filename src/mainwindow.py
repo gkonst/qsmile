@@ -14,7 +14,7 @@ from model import Pack, Icon
 from common import ModeForm
 from exportpack import export_pidgin, export_kopete, export_qip, export_all
 from importpack import import_kopete, import_pidgin_zip, import_pidgin_folder, import_qip_zip
-import options
+import config
 
 from ui.Ui_mainwindow import Ui_MainWindow
 
@@ -35,12 +35,11 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.pack = None
 
     def initTempDir(self):
-        if options.TEMP_DIR:
-            rmtree(options.TEMP_DIR)
-        options.TEMP_DIR = tempfile.mkdtemp()
+        if config.temp_dir:
+            rmtree(config.temp_dir)
+        config.temp_dir = tempfile.mkdtemp()
     
     def fillTable(self):
-        print "options.TEMP_DIR : ", options.TEMP_DIR
         self.clearSmileDetail()
         self.clearSmileList()
         self.actionClose_pack.setEnabled(True) 
@@ -58,11 +57,11 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def fillTableRow(self, row):
         icon = self.pack.icons[row]
         movieLabel = QtGui.QLabel()
-        if icon and icon.image and os.path.exists(os.path.join(options.TEMP_DIR, icon.image)):
+        if icon and icon.image and os.path.exists(os.path.join(config.temp_dir, icon.image)):
             if row >= len(self.movieList):
-                self.movieList.append(QtGui.QMovie(os.path.join(options.TEMP_DIR, icon.image)))
+                self.movieList.append(QtGui.QMovie(os.path.join(config.temp_dir, icon.image)))
             else:
-                self.movieList[row] = QtGui.QMovie(os.path.join(options.TEMP_DIR, icon.image))
+                self.movieList[row] = QtGui.QMovie(os.path.join(config.temp_dir, icon.image))
             movieLabel.setMovie(self.movieList[row])
             movieLabel.movie().start()
         self.table.setCellWidget(row, 0, movieLabel)
@@ -93,9 +92,9 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.clearTableRow(row)
         self.clearTableRow(move(row))
         # change filenames
-        os.rename(os.path.join(options.TEMP_DIR, self.pack.icons[row].image), os.path.join(options.TEMP_DIR, self.pack.icons[row].image + ".tmp"))
-        os.rename(os.path.join(options.TEMP_DIR, self.pack.icons[move(row)].image), os.path.join(options.TEMP_DIR, self.pack.icons[row].image))
-        os.rename(os.path.join(options.TEMP_DIR, self.pack.icons[row].image) + ".tmp", os.path.join(options.TEMP_DIR, self.pack.icons[move(row)].image))
+        os.rename(os.path.join(config.temp_dir, self.pack.icons[row].image), os.path.join(config.temp_dir, self.pack.icons[row].image + ".tmp"))
+        os.rename(os.path.join(config.temp_dir, self.pack.icons[move(row)].image), os.path.join(config.temp_dir, self.pack.icons[row].image))
+        os.rename(os.path.join(config.temp_dir, self.pack.icons[row].image) + ".tmp", os.path.join(config.temp_dir, self.pack.icons[move(row)].image))
         self.pack.icons[row].image , self.pack.icons[move(row)].image = self.pack.icons[move(row)].image , self.pack.icons[row].image        
         # changing rows in pack
         self.pack.icons[row] , self.pack.icons[move(row)] = self.pack.icons[move(row)] , self.pack.icons[row]        
@@ -125,8 +124,8 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             icon = self.pack.icons[row]
             self.clearTableRow(row)
             self.table.removeRow(row)
-            if icon and icon.image and os.path.exists(os.path.join(options.TEMP_DIR, icon.image)):
-                os.remove(os.path.join(options.TEMP_DIR, icon.image))
+            if icon and icon.image and os.path.exists(os.path.join(config.temp_dir, icon.image)):
+                os.remove(os.path.join(config.temp_dir, icon.image))
             self.pack.delete_icon(row)
             
     @pyqtSignature("int, int, int, int")
@@ -198,9 +197,9 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             self.currentSmile.text.append(str(self.textList.item(i).text()))
         if self.currentSmile.validate_icon():
             # copying image      
-            if self.currentSmile.image == None or self.movie.fileName() != os.path.join(options.TEMP_DIR, self.currentSmile.image): 
+            if self.currentSmile.image == None or self.movie.fileName() != os.path.join(config.temp_dir, self.currentSmile.image): 
                 print "fileName : ", self.movie.fileName()
-                copyfile(self.movie.fileName(), os.path.join(options.TEMP_DIR, self.currentSmile.image))
+                copyfile(self.movie.fileName(), os.path.join(config.temp_dir, self.currentSmile.image))
             # updating text
             print self.currentSmile.text
             if self.isCreateMode():
@@ -236,8 +235,8 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.switchForm()
         self.clearSmileDetail()
         # setting movie
-        if self.currentSmile and self.currentSmile.image and os.path.exists(os.path.join(options.TEMP_DIR, self.currentSmile.image)):
-            self.movie = QtGui.QMovie(os.path.join(options.TEMP_DIR, self.currentSmile.image))
+        if self.currentSmile and self.currentSmile.image and os.path.exists(os.path.join(config.temp_dir, self.currentSmile.image)):
+            self.movie = QtGui.QMovie(os.path.join(config.temp_dir, self.currentSmile.image))
             self.movieLabel.setMovie(self.movie)
             self.movieLabel.movie().start()
         # setting text
@@ -271,9 +270,9 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.clearAll()
         self.currentSmile = None
         self.pack = None
-        if options.TEMP_DIR:
-            rmtree(options.TEMP_DIR)
-            options.TEMP_DIR = None
+        if config.temp_dir:
+            rmtree(config.temp_dir)
+            config.temp_dir = None
 
     def switchForm(self):
         self.smileDetailBox.setEnabled(not self.isViewMode())

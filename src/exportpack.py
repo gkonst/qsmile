@@ -26,7 +26,7 @@ import os
 from itertools import ifilter
 from xml.dom import getDOMImplementation
 from zipfile import ZipFile
-import options
+import config
 from util import timing
 
 @timing
@@ -51,14 +51,14 @@ def export_pidgin(pack, target_file):
     zip_file = ZipFile(target_file, "w")
     zip_file.writestr(os.path.join(pack.name, "theme"), "".join(content))
     for icon in pack.icons:
-        zip_file.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, icon.image))
+        zip_file.write(os.path.join(config.temp_dir, icon.image), os.path.join(pack.name, icon.image))
     zip_file.close()
     print "export to pidgin finished"
     
 @timing
 def export_kopete(pack, target_file):
     print "export to kopete started..."
-    pack_document = getDOMImplementation(options.DOM_IMPL).createDocument(None, "icondef", None)
+    pack_document = getDOMImplementation(config.dom_impl).createDocument(None, "icondef", None)
     meta_element = pack_document.createElement("meta")
     if pack.name:
         name_element = pack_document.createElement("name")
@@ -90,7 +90,7 @@ def export_kopete(pack, target_file):
     zip_file = ZipFile(target_file, "w")
     zip_file.writestr(os.path.join(pack.name, "icondef.xml"), content)
     for icon in pack.icons:
-        zip_file.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, icon.image))
+        zip_file.write(os.path.join(config.temp_dir, icon.image), os.path.join(pack.name, icon.image))
     zip_file.close()
     print "export to kopete finished"
 
@@ -103,7 +103,7 @@ def export_qip(pack, target_file):
     zip_file = ZipFile(target_file, "w")
     zip_file.writestr(os.path.join(pack.name, "Animated", "_define.ini"), "".join(content))
     for icon in pack.icons:
-        zip_file.write(os.path.join(options.TEMP_DIR, icon.image), os.path.join(pack.name, "Animated", icon.image))
+        zip_file.write(os.path.join(config.temp_dir, icon.image), os.path.join(pack.name, "Animated", icon.image))
     zip_file.close()
     print "export to qip finished"
 
