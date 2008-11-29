@@ -494,91 +494,91 @@
      <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuImport" >
+   <widget class="QMenu" name="import_menu" >
     <property name="title" >
      <string>Import</string>
     </property>
-    <addaction name="actionImport_From_Kopete" />
-    <addaction name="actionImport_From_Pidgin_ZIP" />
-    <addaction name="actionImport_From_Pidgin_Folder" />
-    <addaction name="actionImport_From_QIP_ZIP" />
-    <addaction name="actionImport_From_QIP_Folder" />
+    <addaction name="import_from_kopete_action" />
+    <addaction name="import_from_pidgin_zip_action" />
+    <addaction name="import_from_pidgin_dir_action" />
+    <addaction name="import_from_qip_zip_action" />
+    <addaction name="import_from_qip_dir_action" />
    </widget>
-   <widget class="QMenu" name="menuExport" >
+   <widget class="QMenu" name="export_menu" >
     <property name="enabled" >
      <bool>false</bool>
     </property>
     <property name="title" >
      <string>Export</string>
     </property>
-    <addaction name="actionExport_To_Pidgin" />
-    <addaction name="actionExport_To_Kopete" />
-    <addaction name="actionExport_To_Qip" />
-    <addaction name="actionExport_To_All" />
+    <addaction name="export_to_pidgin_action" />
+    <addaction name="export_to_kopete_action" />
+    <addaction name="export_to_qip_action" />
+    <addaction name="export_to_all_action" />
    </widget>
-   <widget class="QMenu" name="menuFile" >
+   <widget class="QMenu" name="file_menu" >
     <property name="title" >
      <string>File</string>
     </property>
-    <addaction name="actionNew_pack" />
-    <addaction name="actionClose_pack" />
+    <addaction name="new_pack_action" />
+    <addaction name="close_pack_action" />
    </widget>
-   <addaction name="menuFile" />
-   <addaction name="menuImport" />
-   <addaction name="menuExport" />
+   <addaction name="file_menu" />
+   <addaction name="import_menu" />
+   <addaction name="export_menu" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
-  <action name="actionImport_From_Kopete" >
+  <action name="import_from_kopete_action" >
    <property name="text" >
     <string>Import From Kopete</string>
    </property>
   </action>
-  <action name="actionImport_From_Pidgin_ZIP" >
+  <action name="import_from_pidgin_zip_action" >
    <property name="text" >
     <string>Import From Pidgin ZIP</string>
    </property>
   </action>
-  <action name="actionImport_From_Pidgin_Folder" >
+  <action name="import_from_pidgin_dir_action" >
    <property name="text" >
     <string>Import From Pidgin Folder</string>
    </property>
   </action>
-  <action name="actionImport_From_QIP_ZIP" >
+  <action name="import_from_qip_zip_action" >
    <property name="text" >
     <string>Import From QIP ZIP</string>
    </property>
   </action>
-  <action name="actionImport_From_QIP_Folder" >
+  <action name="import_from_qip_dir_action" >
    <property name="text" >
     <string>Import From QIP Folder</string>
    </property>
   </action>
-  <action name="actionExport_To_Pidgin" >
+  <action name="export_to_pidgin_action" >
    <property name="text" >
     <string>Export To Pidgin</string>
    </property>
   </action>
-  <action name="actionExport_To_Kopete" >
+  <action name="export_to_kopete_action" >
    <property name="text" >
     <string>Export To Kopete</string>
    </property>
   </action>
-  <action name="actionExport_To_Qip" >
+  <action name="export_to_qip_action" >
    <property name="text" >
     <string>Export To Qip</string>
    </property>
   </action>
-  <action name="actionExport_To_All" >
+  <action name="export_to_all_action" >
    <property name="text" >
     <string>Export To All</string>
    </property>
   </action>
-  <action name="actionNew_pack" >
+  <action name="new_pack_action" >
    <property name="text" >
     <string>New pack</string>
    </property>
   </action>
-  <action name="actionClose_pack" >
+  <action name="close_pack_action" >
    <property name="enabled" >
     <bool>false</bool>
    </property>

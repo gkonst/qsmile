@@ -71,10 +71,10 @@ def import_pidgin_zip(target_file):
     return pack
 
 @timing
-def import_pidgin_folder(target_dir):
-    log.debug("import from pidgin folder started...%s", target_dir)
+def import_pidgin_dir(target_dir):
+    log.debug("import from pidgin dir started...%s", target_dir)
     pack =  _import_pidgin(target_dir, _read_content_from_file)
-    log.debug("import from pidgin folder finished")
+    log.debug("import from pidgin dir finished")
     return pack
     
 def _import_pidgin(target_path, read_function):
@@ -137,8 +137,8 @@ def import_qip_zip(target_file):
     return pack
 
 @timing
-def import_qip_folder(target_dir):
-    log.debug("import from qip folder started...%s", target_dir)
+def import_qip_dir(target_dir):
+    log.debug("import from qip dir started...%s", target_dir)
     pack_dir = os.path.join(target_dir, "Animated")
     pack = Pack()
     pack.name = pack_dir.rpartition(os.sep)[0].rpartition(os.sep)[2]
@@ -156,7 +156,7 @@ def import_qip_folder(target_dir):
         fout.write(image_content)
         fout.close()
         pack.add_icon(icon)
-    log.debug("import from qip folder finished")
+    log.debug("import from qip dir finished")
     return pack
 
 def _read_content_from_file(dir, file):

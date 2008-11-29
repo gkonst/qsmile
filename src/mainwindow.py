@@ -34,7 +34,7 @@ from model import Pack, Icon
 from common import ModeForm
 from util import log
 from exportpack import export_pidgin, export_kopete, export_qip, export_all
-from importpack import import_kopete, import_pidgin_zip, import_pidgin_folder, import_qip_zip, import_qip_folder
+from importpack import import_kopete, import_pidgin_zip, import_pidgin_dir, import_qip_zip, import_qip_dir
 import config
 
 from ui.Ui_mainwindow import Ui_MainWindow
@@ -55,16 +55,16 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.currentSmile = None
         self.pack = None
 
-    def initTempDir(self):
+    def _init_temp_dir(self):
         if config.temp_dir:
             rmtree(config.temp_dir)
         config.temp_dir = tempfile.mkdtemp()
     
-    def fillTable(self):
-        self.clearSmileDetail()
-        self.clearSmileList()
-        self.actionClose_pack.setEnabled(True) 
-        self.menuExport.setEnabled(True)
+    def _fill_table(self):
+        self._clear_smile_detail()
+        self._clear_smile_list()
+        self.close_pack_action.setEnabled(True) 
+        self.export_menu.setEnabled(True)
         self.packBox.setEnabled(True)
         self.smileListBox.setEnabled(True)
         self.nameEdit.setText(self.pack.name)
@@ -72,10 +72,10 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.versionEdit.setText(self.pack.version)
         for i in range(len(self.pack.icons)):
             self.table.insertRow(i)
-            self.fillTableRow(i)
+            self._fill_table_row(i)
         self.table.selectRow(0)
             
-    def fillTableRow(self, row):
+    def _fill_table_row(self, row):
         icon = self.pack.icons[row]
         movieLabel = QtGui.QLabel()
         if icon and icon.image and os.path.exists(os.path.join(config.temp_dir, icon.image)):
@@ -89,7 +89,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.table.setCellWidget(row, 1, QtGui.QLabel(icon.image))
         self.table.setCellWidget(row, 2, QtGui.QLabel(" ".join(icon.text)))
         
-    def clearTableRow(self,  row):
+    def _clear_table_row(self,  row):
         self.table.cellWidget(row, 0).movie().stop()
         self.table.cellWidget(row, 0).clear()
         self.table.removeCellWidget(row, 0)
@@ -100,18 +100,18 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     @pyqtSignature("")
     def on_upSmileButton_clicked(self):
         if self.table.currentRow() > 0:
-            self.moveSmile(lambda row: row - 1)
+            self._move_smile(lambda row: row - 1)
             
     @pyqtSignature("")
     def on_downSmileButton_clicked(self):
         if self.table.currentRow() < self.table.rowCount() - 1:
-            self.moveSmile(lambda row: row + 1)
+            self._move_smile(lambda row: row + 1)
             
-    def moveSmile(self, move):
+    def _move_smile(self, move):
         row = self.table.currentRow()
-        self.clearSmileDetail()
-        self.clearTableRow(row)
-        self.clearTableRow(move(row))
+        self._clear_smile_detail()
+        self._clear_table_row(row)
+        self._clear_table_row(move(row))
         # change filenames
         os.rename(os.path.join(config.temp_dir, self.pack.icons[row].image), os.path.join(config.temp_dir, self.pack.icons[row].image + ".tmp"))
         os.rename(os.path.join(config.temp_dir, self.pack.icons[move(row)].image), os.path.join(config.temp_dir, self.pack.icons[row].image))
@@ -119,31 +119,91 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.pack.icons[row].image , self.pack.icons[move(row)].image = self.pack.icons[move(row)].image , self.pack.icons[row].image        
         # changing rows in pack
         self.pack.icons[row] , self.pack.icons[move(row)] = self.pack.icons[move(row)] , self.pack.icons[row]        
-        self.fillTableRow(row)
-        self.fillTableRow(move(row))        
+        self._fill_table_row(row)
+        self._fill_table_row(move(row))        
         self.table.selectRow(move(row))
+        
+    def _fill_smile_detail(self):
+        log.debug("selected icon : %s",  self.currentSmile)
+        self._switch_form()
+        self._clear_smile_detail()
+        # setting movie
+        if self.currentSmile and self.currentSmile.image and os.path.exists(os.path.join(config.temp_dir, self.currentSmile.image)):
+            self.movie = QtGui.QMovie(os.path.join(config.temp_dir, self.currentSmile.image))
+            self.movieLabel.setMovie(self.movie)
+            self.movieLabel.movie().start()
+        # setting text
+        if self.currentSmile and self.currentSmile.text:          
+            self.textList.addItems(self.currentSmile.text)
+            self.textList.setCurrentRow(0)
+            self.textEdit.setText(self.textList.currentItem().text())
+
+    def _clear_smile_detail(self):
+        if self.movieLabel.movie():
+            self.movieLabel.movie().stop()
+        self.movieLabel.clear()        
+        if self.movie:
+            self.movie.stop()
+            self.movie = None
+        self.textList.clear()
+        self.textEdit.clear()
+        self.removeTextButton.setEnabled(False)
+        self.textEdit.setEnabled(False)  
+    
+    def _clear_smile_list(self):
+        self.nameEdit.clear()
+        self.authorEdit.clear()
+        self.versionEdit.clear()
+        self.table.clearContents()
+        self.table.setRowCount(0)
+        self.movieList = []
+        self.upSmileButton.setEnabled(False)
+        self.downSmileButton.setEnabled(False)
+        self.removeSmileButton.setEnabled(False)
+        self.editSmileButton.setEnabled(False)
+            
+    def _clear_all(self):
+        self._clear_smile_detail()
+        self._clear_smile_list()
+        self.export_menu.setEnabled(False)
+        self.close_pack_action.setEnabled(False)
+        self.packBox.setEnabled(False)
+        self.smileListBox.setEnabled(False)
+        self.smileDetailBox.setEnabled(False)
+        
+    def _close_pack(self):
+        self._clear_all()
+        self.currentSmile = None
+        self.pack = None
+        if config.temp_dir:
+            rmtree(config.temp_dir)
+            config.temp_dir = None
+
+    def _switch_form(self):
+        self.smileDetailBox.setEnabled(not self.isViewMode())
+        self.smileListBox.setEnabled(self.isViewMode())  
 
     @pyqtSignature("")
     def on_addSmileButton_clicked(self):
         self.currentSmile = Icon([], self.pack.generate_icon_filename())
         self.setCreateMode()
-        self.fillSmileDetail()
+        self._fill_smile_detail()
         
     @pyqtSignature("")
     def on_editSmileButton_clicked(self):    
         self.currentSmile = self.pack.icons[self.table.currentRow()]
         self.setEditMode()
-        self.fillSmileDetail()
+        self._fill_smile_detail()
        
     @pyqtSignature("")
     def on_removeSmileButton_clicked(self):
         if not QtGui.QMessageBox.question(self, "Are you sure?", "Are you sure?", "Yes", "No"):
             self.table.scrollToTop()
             row = self.table.currentRow()
-            self.clearSmileDetail()
+            self._clear_smile_detail()
             self.table.selectRow(row - 1)
             icon = self.pack.icons[row]
-            self.clearTableRow(row)
+            self._clear_table_row(row)
             self.table.removeRow(row)
             if icon and icon.image and os.path.exists(os.path.join(config.temp_dir, icon.image)):
                 os.remove(os.path.join(config.temp_dir, icon.image))
@@ -158,13 +218,13 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             self.editSmileButton.setEnabled(True)
             self.currentSmile = self.pack.icons[currentRow]
             self.setViewMode()
-            self.fillSmileDetail()
+            self._fill_smile_detail()
         
     @pyqtSignature("int, int")
     def on_table_cellDoubleClicked(self, currentRow, currentColumn):
         self.currentSmile = self.pack.icons[self.table.currentRow()]
         self.setEditMode()
-        self.fillSmileDetail()
+        self._fill_smile_detail()
         
     @pyqtSignature("")
     def on_changeImageButton_clicked(self):
@@ -228,8 +288,8 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
                 self.table.insertRow(self.table.rowCount())
                 self.table.selectRow(self.table.rowCount() - 1)
             self.setViewMode()
-            self.fillTableRow(self.table.currentRow())
-            self.switchForm()
+            self._fill_table_row(self.table.currentRow())
+            self._switch_form()
         else:
             QtGui.QMessageBox.warning(self, "Can't save empty smile", "Can't save empty smile", "Ok")
     
@@ -237,145 +297,85 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_cancelButton_clicked(self):
         self.currentSmile = self.pack.icons[self.table.currentRow()]
         self.setViewMode()
-        self.fillSmileDetail()
-        
-    def clearSmileDetail(self):
-        if self.movieLabel.movie():
-            self.movieLabel.movie().stop()
-        self.movieLabel.clear()        
-        if self.movie:
-            self.movie.stop()
-            self.movie = None
-        self.textList.clear()
-        self.textEdit.clear()
-        self.removeTextButton.setEnabled(False)
-        self.textEdit.setEnabled(False)  
-               
-    def fillSmileDetail(self):
-        log.debug("selected icon : %s",  self.currentSmile)
-        self.switchForm()
-        self.clearSmileDetail()
-        # setting movie
-        if self.currentSmile and self.currentSmile.image and os.path.exists(os.path.join(config.temp_dir, self.currentSmile.image)):
-            self.movie = QtGui.QMovie(os.path.join(config.temp_dir, self.currentSmile.image))
-            self.movieLabel.setMovie(self.movie)
-            self.movieLabel.movie().start()
-        # setting text
-        if self.currentSmile and self.currentSmile.text:          
-            self.textList.addItems(self.currentSmile.text)
-            self.textList.setCurrentRow(0)
-            self.textEdit.setText(self.textList.currentItem().text())
-    
-    def clearSmileList(self):
-        self.nameEdit.clear()
-        self.authorEdit.clear()
-        self.versionEdit.clear()
-        self.table.clearContents()
-        self.table.setRowCount(0)
-        self.movieList = []
-        self.upSmileButton.setEnabled(False)
-        self.downSmileButton.setEnabled(False)
-        self.removeSmileButton.setEnabled(False)
-        self.editSmileButton.setEnabled(False)
-            
-    def clearAll(self):
-        self.clearSmileDetail()
-        self.clearSmileList()
-        self.menuExport.setEnabled(False)
-        self.actionClose_pack.setEnabled(False)
-        self.packBox.setEnabled(False)
-        self.smileListBox.setEnabled(False)
-        self.smileDetailBox.setEnabled(False)
-        
-    def closePack(self):
-        self.clearAll()
-        self.currentSmile = None
-        self.pack = None
-        if config.temp_dir:
-            rmtree(config.temp_dir)
-            config.temp_dir = None
-
-    def switchForm(self):
-        self.smileDetailBox.setEnabled(not self.isViewMode())
-        self.smileListBox.setEnabled(self.isViewMode())        
+        self._fill_smile_detail()     
 
     @pyqtSignature("")
-    def on_actionClose_pack_triggered(self):
-        self.closePack()
+    def on_close_pack_action_triggered(self):
+        self._close_pack()
 
     @pyqtSignature("")
-    def on_actionNew_pack_triggered(self):
-        self.clearAll()
-        self.initTempDir()
+    def on_new_pack_action_triggered(self):
+        self._close_pack()
+        self._init_temp_dir()
         self.pack = Pack()
-        self.fillTable()
+        self._fill_table()
 
     @pyqtSignature("")
-    def on_actionExport_To_Kopete_triggered(self):
+    def on_export_to_kopete_action_triggered(self):
         targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Kopete JISP", self.pack.name + ".jisp", "Kopete Smile Pack JISP (*.jisp)")
         if targetFile:
             export_kopete(self.pack, str(targetFile))
         
     @pyqtSignature("")
-    def on_actionExport_To_Pidgin_triggered(self):
+    def on_export_to_pidgin_action_triggered(self):
         targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Pidgin ZIP", self.pack.name + "_pidgin.zip", "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:    
             export_pidgin(self.pack, str(targetFile))
         
     @pyqtSignature("")
-    def on_actionExport_To_Qip_triggered(self):
+    def on_export_to_qip_action_triggered(self):
         targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to QIP ZIP", self.pack.name + "_qip.zip", "QIP Smile Pack ZIP (*.zip)")
         if targetFile:
             export_qip(self.pack, str(targetFile))
 
     @pyqtSignature("")
-    def on_actionExport_To_All_triggered(self):
+    def on_export_to_all_action_triggered(self):
         targetDir = QtGui.QFileDialog.getExistingDirectory(self, "Export to All", os.path.expanduser('~'))
         if targetDir:
             export_all(self.pack, str(targetDir))
         
     @pyqtSignature("")
-    def on_actionImport_From_Kopete_triggered(self):
+    def on_import_from_kopete_action_triggered(self):
         targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From Kopete JISP", os.path.expanduser('~'), "Kopete Smile Pack JISP (*.jisp)")
         if targetFile:
-            self.closePack()
-            self.initTempDir()
+            self._close_pack()
+            self._init_temp_dir()
             self.pack = import_kopete(str(targetFile))
-            self.fillTable()
+            self._fill_table()
 
     @pyqtSignature("")
-    def on_actionImport_From_Pidgin_ZIP_triggered(self):
+    def on_import_from_pidgin_zip_action_triggered(self):
         targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From Pidgin ZIP", os.path.expanduser('~'), "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:
-            self.closePack()
-            self.initTempDir()
+            self._close_pack()
+            self._init_temp_dir()
             self.pack = import_pidgin_zip(str(targetFile))
-            self.fillTable()
+            self._fill_table()
     
     @pyqtSignature("")        
-    def on_actionImport_From_Pidgin_Folder_triggered(self):
+    def on_import_from_pidgin_dir_action_triggered(self):
         targetDir = QtGui.QFileDialog.getExistingDirectory(self, "Import From Pidgin Folder", os.path.expanduser('~'))
         if targetDir:
-            self.closePack()
-            self.initTempDir()
-            self.pack = import_pidgin_folder(str(targetDir))
-            self.fillTable()
+            self._close_pack()
+            self._init_temp_dir()
+            self.pack = import_pidgin_dir(str(targetDir))
+            self._fill_table()
             
     @pyqtSignature("")
-    def on_actionImport_From_QIP_ZIP_triggered(self):
+    def on_import_from_qip_zip_action_triggered(self):
         targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From QIP ZIP", os.path.expanduser('~'), "QIP Smile Pack ZIP (*.zip)")
         if targetFile:
-            self.closePack()
-            self.initTempDir()
+            self._close_pack()
+            self._init_temp_dir()
             self.pack = import_qip_zip(str(targetFile))
-            self.fillTable()
+            self._fill_table()
             
     @pyqtSignature("")        
-    def on_actionImport_From_QIP_Folder_triggered(self):
+    def on_import_from_qip_dir_action_triggered(self):
         targetDir = QtGui.QFileDialog.getExistingDirectory(self, "Import From QIP Folder", os.path.expanduser('~'))
         if targetDir:
-            self.closePack()
-            self.initTempDir()
-            self.pack = import_qip_folder(str(targetDir))
-            self.fillTable()
+            self._close_pack()
+            self._init_temp_dir()
+            self.pack = import_qip_dir(str(targetDir))
+            self._fill_table()
             
