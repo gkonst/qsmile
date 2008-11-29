@@ -27,11 +27,11 @@ from itertools import ifilter
 from xml.dom import getDOMImplementation
 from zipfile import ZipFile
 import config
-from util import timing
+from util import timing, log
 
 @timing
 def export_pidgin(pack, target_file):
-    print "export to pidgin started..."
+    log.debug("export to pidgin started...%s", target_file)
     content = ["Name=%s\n"  % pack.name]
     if pack.author:
         content.append("Author=%s\n" % pack.author)
@@ -53,11 +53,11 @@ def export_pidgin(pack, target_file):
     for icon in pack.icons:
         zip_file.write(os.path.join(config.temp_dir, icon.image), os.path.join(pack.name, icon.image))
     zip_file.close()
-    print "export to pidgin finished"
+    log.debug("export to pidgin finished")
     
 @timing
 def export_kopete(pack, target_file):
-    print "export to kopete started..."
+    log.debug("export to kopete started...%s", target_file)
     pack_document = getDOMImplementation(config.dom_impl).createDocument(None, "icondef", None)
     meta_element = pack_document.createElement("meta")
     if pack.name:
@@ -92,11 +92,11 @@ def export_kopete(pack, target_file):
     for icon in pack.icons:
         zip_file.write(os.path.join(config.temp_dir, icon.image), os.path.join(pack.name, icon.image))
     zip_file.close()
-    print "export to kopete finished"
+    log.debug("export to kopete finished")
 
 @timing
 def export_qip(pack, target_file):
-    print "export to qip started..."
+    log.debug("export to qip started...%s", target_file)
     content = []
     for icon in pack.icons:
         content.append(",".join(icon.text) + "\n")
@@ -105,7 +105,7 @@ def export_qip(pack, target_file):
     for icon in pack.icons:
         zip_file.write(os.path.join(config.temp_dir, icon.image), os.path.join(pack.name, "Animated", icon.image))
     zip_file.close()
-    print "export to qip finished"
+    log.debug("export to qip finished")
 
 @timing    
 def export_all(pack, target_dir):

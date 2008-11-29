@@ -31,7 +31,7 @@ from util import timing, log
 
 @timing
 def import_kopete(target_file):
-    log.debug("import from kopete jisp started...")
+    log.debug("import from kopete jisp started...%s", target_file)
     zip_file = ZipFile(target_file, "r")
     content = zip_file.read(filter(lambda item: item.endswith("icondef.xml"), zip_file.namelist())[0])
     pack = Pack()
@@ -65,16 +65,16 @@ def import_kopete(target_file):
 
 @timing
 def import_pidgin_zip(target_file):
-    print "import from pidgin zip started..."
+    log.debug("import from pidgin zip started...%s", target_file)
     pack =  _import_pidgin(target_file, _read_content_from_zip)
-    print "import from pidgin zip finished"
+    log.debug("import from pidgin zip finished")
     return pack
 
 @timing
 def import_pidgin_folder(target_dir):
-    print "import from pidgin folder started..."
+    log.debug("import from pidgin folder started...%s", target_dir)
     pack =  _import_pidgin(target_dir, _read_content_from_file)
-    print "import from pidgin folder finished"
+    log.debug("import from pidgin folder finished")
     return pack
     
 def _import_pidgin(target_path, read_function):
@@ -97,9 +97,9 @@ def _import_pidgin(target_path, read_function):
                     text = texts[i]
                     i += 1
                 icon.add_text(text.replace("\\\\", "\\"))
-            print "  text : ", icon.text
+            log.debug("  text : %s", icon.text)
             pack.add_icon(icon)
-            print " importing image : ", icon.image
+            log.debug(" importing image : %s", icon.image)
             image_content = read_function(target_path, icon.image)
             fout = open(os.path.join(config.temp_dir, icon.image),  "wb")
             fout.write(image_content)
@@ -114,7 +114,7 @@ def _import_pidgin(target_path, read_function):
 
 @timing
 def import_qip_zip(target_file):
-    print "import from qip zip started..."
+    log.debug("import from qip zip started...%s", target_file)
     zip_file = ZipFile(target_file, "r")
     define_entry = filter(lambda item: item.endswith("_define.ini"), zip_file.namelist())[0]
     content = zip_file.read(define_entry)
@@ -123,17 +123,17 @@ def import_qip_zip(target_file):
     images = filter(lambda item: item.endswith(".gif"), zip_file.namelist())
     images.sort()
     for line, image_entry in zip_file(content.split("\n"), images):
-        print " line : ", line, " image : ", image_entry
+        log.debug(" line : %s, image : %s", line, image_entry)
         icon = Icon(line.split(","), image_entry.rpartition("/")[2])
-        print " text : ", icon.text, " image : ", icon.image
-        print " importing image : ", icon.image, " from entry : ", image_entry 
+        log.debug(" text : %s, image : %s", icon.text, icon.image)
+        log.debug(" importing image : %s, from entry : %s", icon.image, image_entry) 
         image_content = zip_file.read(image_entry)
         fout = open(os.path.join(config.temp_dir, icon.image),  "wb")
         fout.write(image_content)
         fout.close()
-        pack.add_icon(icon) 
+        pack.add_icon(icon)
+    log.debug("import from qip zip finished") 
     return pack
-    print "import from qip zip finished"
 
 def _read_content_from_file(dir, file):
     fin = open(os.path.join(dir, file))

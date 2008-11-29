@@ -1,5 +1,25 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+#
+#    src/mainwindow.py
+#
+#    Copyright (C) 2008 Konstantin Grigoriev
+#
+#    This file is part of qsmile.
+#    
+#    qsmile is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#    
+#    qsmile is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#    
+#    You should have received a copy of the GNU General Public License
+#    along with qsmile.  If not, see <http://www.gnu.org/licenses/>.
+#
 """
 Module implementing MainWindow.
 """
@@ -12,6 +32,7 @@ from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
 from model import Pack, Icon
 from common import ModeForm
+from util import log
 from exportpack import export_pidgin, export_kopete, export_qip, export_all
 from importpack import import_kopete, import_pidgin_zip, import_pidgin_folder, import_qip_zip
 import config
@@ -149,7 +170,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     def on_changeImageButton_clicked(self):
         imageFile = QtGui.QFileDialog.getOpenFileName(self, "Choose picture", os.path.expanduser('~'), "gif (*.gif)")
         if imageFile:
-            print "Opening image : ", imageFile
+            log.debug("Opening image : %s", imageFile)
             self.movieLabel.clear()
             self.movie = QtGui.QMovie(imageFile)
             self.movieLabel.setMovie(self.movie)
@@ -198,10 +219,10 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         if self.currentSmile.validate_icon():
             # copying image      
             if self.currentSmile.image == None or self.movie.fileName() != os.path.join(config.temp_dir, self.currentSmile.image): 
-                print "fileName : ", self.movie.fileName()
+                log.debug(" new image fileName : %s", self.movie.fileName())
                 copyfile(self.movie.fileName(), os.path.join(config.temp_dir, self.currentSmile.image))
             # updating text
-            print self.currentSmile.text
+            log.debug(" new text : %s", self.currentSmile.text)
             if self.isCreateMode():
                 self.pack.add_icon(self.currentSmile)
                 self.table.insertRow(self.table.rowCount())
@@ -231,7 +252,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.textEdit.setEnabled(False)  
                
     def fillSmileDetail(self):
-        print "selected icon : ",  self.currentSmile
+        log.debug("selected icon : %s",  self.currentSmile)
         self.switchForm()
         self.clearSmileDetail()
         # setting movie
