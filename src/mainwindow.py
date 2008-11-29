@@ -34,7 +34,7 @@ from model import Pack, Icon
 from common import ModeForm
 from util import log
 from exportpack import export_pidgin, export_kopete, export_qip, export_all
-from importpack import import_kopete, import_pidgin_zip, import_pidgin_folder, import_qip_zip
+from importpack import import_kopete, import_pidgin_zip, import_pidgin_folder, import_qip_zip, import_qip_folder
 import config
 
 from ui.Ui_mainwindow import Ui_MainWindow
@@ -369,3 +369,13 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
             self.initTempDir()
             self.pack = import_qip_zip(str(targetFile))
             self.fillTable()
+            
+    @pyqtSignature("")        
+    def on_actionImport_From_QIP_Folder_triggered(self):
+        targetDir = QtGui.QFileDialog.getExistingDirectory(self, "Import From QIP Folder", os.path.expanduser('~'))
+        if targetDir:
+            self.closePack()
+            self.initTempDir()
+            self.pack = import_qip_folder(str(targetDir))
+            self.fillTable()
+            

@@ -120,9 +120,10 @@ def import_qip_zip(target_file):
     content = zip_file.read(define_entry)
     pack = Pack()
     pack.name = define_entry.partition("/")[0]
+    log.debug(" pack name : %s", pack.name)
     images = filter(lambda item: item.endswith(".gif"), zip_file.namelist())
     images.sort()
-    for line, image_entry in zip_file(content.split("\n"), images):
+    for line, image_entry in zip(content.splitlines(), images):
         log.debug(" line : %s, image : %s", line, image_entry)
         icon = Icon(line.split(","), image_entry.rpartition("/")[2])
         log.debug(" text : %s, image : %s", icon.text, icon.image)
@@ -133,6 +134,29 @@ def import_qip_zip(target_file):
         fout.close()
         pack.add_icon(icon)
     log.debug("import from qip zip finished") 
+    return pack
+
+@timing
+def import_qip_folder(target_dir):
+    log.debug("import from qip folder started...%s", target_dir)
+    pack_dir = os.path.join(target_dir, "Animated")
+    pack = Pack()
+    pack.name = pack_dir.rpartition(os.sep)[0].rpartition(os.sep)[2]
+    log.debug(" pack name : %s", pack.name)
+    content = _read_content_from_file(pack_dir, "_define.ini")
+    images = filter(lambda item: item.endswith(".gif"), os.listdir(pack_dir))
+    images.sort()
+    for line, image_entry in zip(content.splitlines(), images):
+        log.debug(" line : %s, image : %s", line, image_entry)
+        icon = Icon(line.split(","), image_entry.rpartition(os.sep)[2])
+        log.debug(" text : %s, image : %s", icon.text, icon.image)
+        log.debug(" importing image : %s, from entry : %s", icon.image, image_entry) 
+        image_content = _read_content_from_file(pack_dir, image_entry)
+        fout = open(os.path.join(config.temp_dir, icon.image),  "wb")
+        fout.write(image_content)
+        fout.close()
+        pack.add_icon(icon)
+    log.debug("import from qip folder finished")
     return pack
 
 def _read_content_from_file(dir, file):
