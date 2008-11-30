@@ -34,7 +34,7 @@ from model import Pack, Icon
 from common import ModeForm
 from util import log
 from exportpack import export_pidgin, export_kopete, export_qip, export_all
-from importpack import import_kopete, import_pidgin_zip, import_pidgin_dir, import_qip_zip, import_qip_dir
+from importpack import import_kopete, import_pidgin_zip, import_pidgin_dir, import_qip_zip, import_qip_dir, ImportPackError
 import config
 
 from ui.Ui_mainwindow import Ui_MainWindow
@@ -312,19 +312,19 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
 
     @pyqtSignature("")
     def on_export_to_kopete_action_triggered(self):
-        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Kopete JISP", self.pack.name + ".jisp", "Kopete Smile Pack JISP (*.jisp)")
+        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Kopete JISP", os.path.join(os.path.expanduser('~'), self.pack.name + ".jisp"), "Kopete Smile Pack JISP (*.jisp)")
         if targetFile:
             export_kopete(self.pack, str(targetFile))
         
     @pyqtSignature("")
     def on_export_to_pidgin_action_triggered(self):
-        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Pidgin ZIP", self.pack.name + "_pidgin.zip", "Pidgin Smile Pack ZIP (*.zip)")
+        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to Pidgin ZIP", os.path.join(os.path.expanduser('~'), self.pack.name + "_pidgin.zip"), "Pidgin Smile Pack ZIP (*.zip)")
         if targetFile:    
             export_pidgin(self.pack, str(targetFile))
         
     @pyqtSignature("")
     def on_export_to_qip_action_triggered(self):
-        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to QIP ZIP", self.pack.name + "_qip.zip", "QIP Smile Pack ZIP (*.zip)")
+        targetFile = QtGui.QFileDialog.getSaveFileName(self, "Export to QIP ZIP", os.path.join(os.path.expanduser('~'), self.pack.name + "_qip.zip"), "QIP Smile Pack ZIP (*.zip)")
         if targetFile:
             export_qip(self.pack, str(targetFile))
 
@@ -340,8 +340,11 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         if targetFile:
             self._close_pack()
             self._init_temp_dir()
-            self.pack = import_kopete(str(targetFile))
-            self._fill_table()
+            try:
+                self.pack = import_kopete(str(targetFile))
+                self._fill_table()
+            except ImportPackError, e:
+                QtGui.QMessageBox.warning(self, "Error", e.message, "Ok")
 
     @pyqtSignature("")
     def on_import_from_pidgin_zip_action_triggered(self):
@@ -349,8 +352,11 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         if targetFile:
             self._close_pack()
             self._init_temp_dir()
-            self.pack = import_pidgin_zip(str(targetFile))
-            self._fill_table()
+            try:
+                self.pack = import_pidgin_zip(str(targetFile))
+                self._fill_table()
+            except ImportPackError, e:
+                QtGui.QMessageBox.warning(self, "Error", e.message, "Ok")
     
     @pyqtSignature("")        
     def on_import_from_pidgin_dir_action_triggered(self):
@@ -358,17 +364,23 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         if targetDir:
             self._close_pack()
             self._init_temp_dir()
-            self.pack = import_pidgin_dir(str(targetDir))
-            self._fill_table()
-            
+            try:
+                self.pack = import_pidgin_dir(str(targetDir))
+                self._fill_table()
+            except ImportPackError, e:
+                QtGui.QMessageBox.warning(self, "Error", e.message, "Ok")
+                            
     @pyqtSignature("")
     def on_import_from_qip_zip_action_triggered(self):
         targetFile = QtGui.QFileDialog.getOpenFileName(self, "Import From QIP ZIP", os.path.expanduser('~'), "QIP Smile Pack ZIP (*.zip)")
         if targetFile:
             self._close_pack()
             self._init_temp_dir()
-            self.pack = import_qip_zip(str(targetFile))
-            self._fill_table()
+            try:
+                self.pack = import_qip_zip(str(targetFile))
+                self._fill_table()
+            except ImportPackError, e:
+                QtGui.QMessageBox.warning(self, "Error", e.message, "Ok")
             
     @pyqtSignature("")        
     def on_import_from_qip_dir_action_triggered(self):
@@ -376,6 +388,9 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         if targetDir:
             self._close_pack()
             self._init_temp_dir()
-            self.pack = import_qip_dir(str(targetDir))
-            self._fill_table()
+            try:
+                self.pack = import_qip_dir(str(targetDir))
+                self._fill_table()
+            except ImportPackError, e:
+                QtGui.QMessageBox.warning(self, "Error", e.message, "Ok")
             

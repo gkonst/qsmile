@@ -24,7 +24,7 @@ Module contains various import methods.
 """
 import os
 from itertools import ifilter
-from zipfile import ZipFile
+from zipfile import ZipFile, is_zipfile
 from model import Pack,  Icon
 import config
 from util import timing, log
@@ -32,8 +32,11 @@ from util import timing, log
 @timing
 def import_kopete(target_file):
     log.debug("import from kopete jisp started...%s", target_file)
-    zip_file = ZipFile(target_file, "r")
-    content = zip_file.read(filter(lambda item: item.endswith("icondef.xml"), zip_file.namelist())[0])
+    try:
+        content = _read_content_from_zip(target_file, "icondef.xml")
+    except IOError, (errno, strerror):
+        log.warn("import from kopete failed : %s", strerror)
+        raise ImportPackError("Error during importing : " + strerror)
     pack = Pack()
     try:
         from xml.dom.ext.reader import PyExpat
@@ -50,16 +53,17 @@ def import_kopete(target_file):
     xml_icons = dom.getElementsByTagName("icon")
     for xml_icon in xml_icons:
         icon = Icon([], str(xml_icon.getElementsByTagName("object")[0].firstChild.data))
-        pack.add_icon(icon)
         for text in xml_icon.getElementsByTagName("text"):
             icon.add_text(str(text.firstChild.data))
-    for icon in pack.icons:
-        image_entry = filter(lambda item: item.endswith(icon.image), zip_file.namelist())[0]
-        log.debug(" importing image : %s from entry : %s", icon.image, image_entry) 
-        image_content = zip_file.read(image_entry)
-        fout = open(os.path.join(config.temp_dir, icon.image),  "wb")
-        fout.write(image_content)
-        fout.close()
+        log.debug(" importing image : %s ", icon.image)
+        try: 
+            image_content = _read_content_from_zip(target_file, icon.image)
+            fout = open(os.path.join(config.temp_dir, icon.image),  "wb")
+            fout.write(image_content)
+            fout.close()
+        except IOError, (errno, strerror):
+            log.warn("error during loading image : " + strerror + " -> skipping")            
+        pack.add_icon(icon)
     log.debug("import from kopete jisp finished")
     return pack;
 
@@ -78,7 +82,11 @@ def import_pidgin_dir(target_dir):
     return pack
     
 def _import_pidgin(target_path, read_function):
-    content = read_function(target_path, "theme")
+    try:
+        content = read_function(target_path, "theme")
+    except IOError, (errno, strerror):
+        log.warn("import from pidgin failed : %s", strerror)
+        raise ImportPackError("Error during importing : " + strerror)
     pack = Pack()
     smile_part_started = False
     for line in ifilter(lambda line: line and not line.startswith("!"), content.split("\n")):
@@ -98,12 +106,15 @@ def _import_pidgin(target_path, read_function):
                     i += 1
                 icon.add_text(text.replace("\\\\", "\\"))
             log.debug("  text : %s", icon.text)
-            pack.add_icon(icon)
             log.debug(" importing image : %s", icon.image)
-            image_content = read_function(target_path, icon.image)
-            fout = open(os.path.join(config.temp_dir, icon.image),  "wb")
-            fout.write(image_content)
-            fout.close()          
+            try:
+                image_content = read_function(target_path, icon.image)
+                fout = open(os.path.join(config.temp_dir, icon.image),  "wb")
+                fout.write(image_content)
+                fout.close()          
+                pack.add_icon(icon)
+            except IOError, (errno, strerror):
+                log.warn("error during loading image : " + strerror + " -> skipping")
         elif "Name=" in line:
             pack.name = line.partition("=")[2].strip()
         elif "Author=" in line:
@@ -115,6 +126,7 @@ def _import_pidgin(target_path, read_function):
 @timing
 def import_qip_zip(target_file):
     log.debug("import from qip zip started...%s", target_file)
+    # TODO add validation
     zip_file = ZipFile(target_file, "r")
     define_entry = filter(lambda item: item.endswith("_define.ini"), zip_file.namelist())[0]
     content = zip_file.read(define_entry)
@@ -139,6 +151,7 @@ def import_qip_zip(target_file):
 @timing
 def import_qip_dir(target_dir):
     log.debug("import from qip dir started...%s", target_dir)
+    # TODO add validation
     pack_dir = os.path.join(target_dir, "Animated")
     pack = Pack()
     pack.name = pack_dir.rpartition(os.sep)[0].rpartition(os.sep)[2]
@@ -166,7 +179,19 @@ def _read_content_from_file(dir, file):
     return content
 
 def _read_content_from_zip(file, entry):
+    if not is_zipfile(file):
+        raise IOError(None, "Not a zip file format")
     zip_file = ZipFile(file, "r")
-    content = zip_file.read(filter(lambda item: item.endswith(entry), zip_file.namelist())[0])
+    try:
+        content = zip_file.read(filter(lambda item: item.endswith(entry), zip_file.namelist())[0])
+    except IndexError:
+        raise IOError(None, "File entry not found in zip : " + entry)
     zip_file.close()
     return content
+
+class ImportPackError(Exception):
+    def __init__(self, message):
+        self.message = message
+    def __str__(self):
+        return repr(self.message)
+
