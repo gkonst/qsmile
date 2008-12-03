@@ -5,3 +5,5 @@ data
 _eric4project
 *.e4p
 *.pyc
+dist
+qsmile.egg-info
