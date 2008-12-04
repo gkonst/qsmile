@@ -7,3 +7,5 @@ _eric4project
 *.pyc
 dist
 qsmile.egg-info
+build
+MANIFEST*
