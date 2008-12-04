@@ -23,8 +23,10 @@
 Module used for installing/uninstalling application.
 """
 
-from setuptools import setup, find_packages
 import os
+from distutils import cmd
+from distutils.command.build import build as _build
+from setuptools import setup, find_packages
 
 def _generate_manifest_in():
     """
@@ -40,6 +42,60 @@ def _generate_manifest_in():
 
 _generate_manifest_in()
 
+class pyuic(cmd.Command):
+    description = "Generates .py from .ui"
+
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        os.path.walk(".", self._process, None)
+        
+    def _process(self, arg, dirname, names):
+        files = filter(lambda param: param[-3:] == '.ui' , names)
+        for ui in files:
+            target_name = os.path.join(dirname, "Ui_" + ui[0: -3] + ".py")
+            print "processing ", os.path.join(dirname, ui), " -> ", target_name
+            os.system("/usr/bin/pyuic4 " + os.path.join(dirname, ui) + " -o " + target_name)
+
+                
+class pyrcc(cmd.Command):
+    description = "Generates .py from .rc"
+
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        os.path.walk(".", self._process, None)
+        
+    def _process(self, arg, dirname, names):
+        files = filter(lambda param: param[-4:] == '.qrc' , names)
+        for rc in files:
+            target_name = os.path.join(dirname, rc[0: -4] + "_rc.py")
+            print "processing ", os.path.join(dirname, rc), " -> ", target_name
+            os.system("/usr/bin/pyrcc4 " + os.path.join(dirname, rc) + " -o " + target_name)
+
+class build(_build):
+    sub_commands = [('pyuic', None), ('pyrcc', None)] + _build.sub_commands
+    def run(self):
+        _build.run(self)
+
+cmdclass = {
+    'build': build,
+    'pyuic': pyuic,
+    'pyrcc': pyrcc,
+}
+
 setup(
       name = "qsmile", 
       version = "0.2",
@@ -47,6 +103,7 @@ setup(
       author_email = "Konstantin.V.Grigoriev@gmail.com",
       url = "http://code.google.com/p/qsmile/",
       license = "GPLv3",
+      cmdclass = cmdclass,
       packages = find_packages(),
       include_package_data = True,
       package_data = {"src.ui" : ["images/*.*"]},
