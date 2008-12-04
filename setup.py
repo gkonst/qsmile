@@ -22,7 +22,8 @@
 """
 Module used for installing/uninstalling application.
 """
-from distutils.core import setup
+
+from setuptools import setup, find_packages
 import os
 
 def _generate_manifest_in():
@@ -46,7 +47,11 @@ setup(
       author_email = "Konstantin.V.Grigoriev@gmail.com",
       url = "http://code.google.com/p/qsmile/",
       license = "GPLv3",
-      packages = ["src", "src.ui"],
+      packages = find_packages(),
       include_package_data = True,
-      package_data = {"src.ui" : ["images/*.*"]}
+      package_data = {"src.ui" : ["images/*.*"]},
+      entry_points = """
+        [console_scripts]
+            qsmile = src.qsmile:main
+    """,
 )
