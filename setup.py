@@ -23,6 +23,9 @@
 Module used for installing/uninstalling application.
 """
 
+import ez_setup
+ez_setup.use_setuptools()
+
 import os
 from distutils import cmd
 from distutils.command.build import build as _build
