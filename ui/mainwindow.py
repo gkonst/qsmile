@@ -30,12 +30,12 @@ from shutil import copyfile, rmtree
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
-from model import Pack, Icon
-from common import ModeForm
-from util import log
-from exportpack import export_pidgin, export_kopete, export_qip, export_all
-from importpack import import_kopete, import_pidgin_zip, import_pidgin_dir, import_qip_zip, import_qip_dir, ImportPackError
-import config
+from core.model import Pack, Icon
+from core.common import ModeForm
+from core.util import log
+from core.exportpack import export_pidgin, export_kopete, export_qip, export_all
+from core.importpack import import_kopete, import_pidgin_zip, import_pidgin_dir, import_qip_zip, import_qip_dir, ImportPackError
+import core.config as config
 
 from ui.Ui_mainwindow import Ui_MainWindow
 
