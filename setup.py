@@ -30,7 +30,11 @@ import os
 from distutils import cmd
 from distutils.command.build import build as _build
 from setuptools import setup, find_packages
-import py2exe
+
+try:
+    import py2exe
+except ImportError:
+    pass
 
 def _generate_manifest_in():
     """
