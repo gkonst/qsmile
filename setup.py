@@ -30,6 +30,7 @@ import os
 from distutils import cmd
 from distutils.command.build import build as _build
 from setuptools import setup, find_packages
+import py2exe
 
 def _generate_manifest_in():
     """
@@ -40,7 +41,7 @@ def _generate_manifest_in():
     if os.path.exists("MANIFEST.in"):
         os.remove("MANIFEST.in")
     fin = open("MANIFEST.in", "wt")
-    fin.write("include src/ui/images/*.*")
+    fin.write("include ui/images/*.*")
     fin.close()
 
 _generate_manifest_in()
@@ -64,7 +65,7 @@ class pyuic(cmd.Command):
         for ui in files:
             target_name = os.path.join(dirname, "Ui_" + ui[0: -3] + ".py")
             print "processing ", os.path.join(dirname, ui), " -> ", target_name
-            os.system("/usr/bin/pyuic4 " + os.path.join(dirname, ui) + " -o " + target_name)
+            os.system("pyuic4 " + os.path.join(dirname, ui) + " -o " + target_name)
 
                 
 class pyrcc(cmd.Command):
@@ -86,7 +87,7 @@ class pyrcc(cmd.Command):
         for rc in files:
             target_name = os.path.join(dirname, rc[0: -4] + "_rc.py")
             print "processing ", os.path.join(dirname, rc), " -> ", target_name
-            os.system("/usr/bin/pyrcc4 " + os.path.join(dirname, rc) + " -o " + target_name)
+            os.system("pyrcc4 " + os.path.join(dirname, rc) + " -o " + target_name)
 
 class build(_build):
     sub_commands = [('pyuic', None), ('pyrcc', None)] + _build.sub_commands
@@ -100,18 +101,22 @@ cmdclass = {
 }
 
 setup(
-      name = "qsmile", 
-      version = "0.2",
-      author =  "Konstantin Grigoriev",
-      author_email = "Konstantin.V.Grigoriev@gmail.com",
-      url = "http://code.google.com/p/qsmile/",
-      license = "GPLv3",
-      cmdclass = cmdclass,
-      packages = find_packages(),
-      include_package_data = True,
-      package_data = {"src.ui" : ["images/*.*"]},
-      entry_points = """
+    name = "qsmile", 
+    version = "0.2",
+    author =  "Konstantin Grigoriev",
+    author_email = "Konstantin.V.Grigoriev@gmail.com",
+    url = "http://code.google.com/p/qsmile/",
+    license = "GPLv3",
+    cmdclass = cmdclass,
+    packages = find_packages(),
+    include_package_data = True,
+    package_data = {"ui" : ["images/*.*"]},
+    entry_points = """
         [console_scripts]
             qsmile = src.qsmile:main
     """,
+    options = {"py2exe": {
+                    "bundle_files": 1,
+                    "includes": ["sip"]}}, 
+    windows = ["qsmile.py"]
 )
