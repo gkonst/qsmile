@@ -25,9 +25,9 @@ Module contains various import methods.
 import os
 from itertools import ifilter
 from zipfile import ZipFile, is_zipfile
-from model import Pack,  Icon
-import config
-from util import timing, log
+from core.model import Pack,  Icon
+import core.config as config
+from core.util import timing, log
 
 @timing
 def import_kopete(target_file):
