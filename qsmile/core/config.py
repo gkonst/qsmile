@@ -1,7 +1,6 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#    src/qsmile.py
+#    qsmile/core/config.py
 #
 #    Copyright (C) 2008 Konstantin Grigoriev
 #
@@ -20,16 +19,5 @@
 #    You should have received a copy of the GNU General Public License
 #    along with qsmile.  If not, see <http://www.gnu.org/licenses/>.
 #
-import sys
-
-from PyQt4.QtGui import QApplication
-from ui.mainwindow import MainWindow
-
-
-def main() :
-    app = QApplication(sys.argv)
-    wnd = MainWindow()
-    wnd.show()
-    sys.exit(app.exec_())
-if __name__ == '__main__':
-    main()
+dom_impl = "minidom"
+temp_dir = None

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#    src/common.py
+#    qsmile/core/common.py
 #
 #    Copyright (C) 2008 Konstantin Grigoriev
 #

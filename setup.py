@@ -45,7 +45,7 @@ def _generate_manifest_in():
     if os.path.exists("MANIFEST.in"):
         os.remove("MANIFEST.in")
     fin = open("MANIFEST.in", "wt")
-    fin.write("include ui/images/*.*")
+    fin.write("include qsmile/ui/images/*.*")
     fin.close()
 
 _generate_manifest_in()
@@ -114,13 +114,13 @@ setup(
     cmdclass = cmdclass,
     packages = find_packages(),
     include_package_data = True,
-    package_data = {"ui" : ["images/*.*"]},
+    package_data = {"qsmile.ui" : ["images/*.*"]},
     entry_points = """
         [console_scripts]
-            qsmile = src.qsmile:main
+            qsmile = qsmile.main:start_ui
     """,
     options = {"py2exe": {
                     "bundle_files": 1,
-                    "includes": ["sip"]}}, 
-    windows = ["qsmile.py"]
+                    "includes": ["sip", "qsmile.ui.mainwindow"]}}, 
+    windows = ["qsmile_runner.py"]
 )

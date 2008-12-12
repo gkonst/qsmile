@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#    src/exportpack.py
+#    qsmile/core/exportpack.py
 #
 #    Copyright (C) 2008 Konstantin Grigoriev
 #
@@ -26,8 +26,8 @@ import os
 from itertools import ifilter
 from xml.dom import getDOMImplementation
 from zipfile import ZipFile
-import core.config as config
-from core.util import timing, log
+import qsmile.core.config as config
+from qsmile.core.util import timing, log
 
 @timing
 def export_pidgin(pack, target_file):

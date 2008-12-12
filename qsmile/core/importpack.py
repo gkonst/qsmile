@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#    src/importpack.py
+#    qsmile/core/importpack.py
 #
 #    Copyright (C) 2008 Konstantin Grigoriev
 #
@@ -25,9 +25,9 @@ Module contains various import methods.
 import os
 from itertools import ifilter
 from zipfile import ZipFile, is_zipfile
-from core.model import Pack,  Icon
-import core.config as config
-from core.util import timing, log
+from qsmile.core.model import Pack,  Icon
+import qsmile.core.config as config
+from qsmile.core.util import timing, log
 
 @timing
 def import_kopete(target_file):

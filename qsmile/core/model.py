@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#    src/model.py
+#    qsmile/core/model.py
 #
 #    Copyright (C) 2008 Konstantin Grigoriev
 #

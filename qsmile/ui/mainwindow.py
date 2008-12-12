@@ -1,7 +1,6 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#    src/mainwindow.py
+#    qsmile/core/mainwindow.py
 #
 #    Copyright (C) 2008 Konstantin Grigoriev
 #
@@ -30,14 +29,14 @@ from shutil import copyfile, rmtree
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
-from core.model import Pack, Icon
-from core.common import ModeForm
-from core.util import log
-from core.exportpack import export_pidgin, export_kopete, export_qip, export_all
-from core.importpack import import_kopete, import_pidgin_zip, import_pidgin_dir, import_qip_zip, import_qip_dir, ImportPackError
-import core.config as config
+from qsmile.core.model import Pack, Icon
+from qsmile.core.common import ModeForm
+from qsmile.core.util import log
+from qsmile.core.exportpack import export_pidgin, export_kopete, export_qip, export_all
+from qsmile.core.importpack import import_kopete, import_pidgin_zip, import_pidgin_dir, import_qip_zip, import_qip_dir, ImportPackError
+import qsmile.core.config as config
 
-from ui.Ui_mainwindow import Ui_MainWindow
+from qsmile.ui.Ui_mainwindow import Ui_MainWindow
 
 class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
     """
