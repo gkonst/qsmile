@@ -56,8 +56,10 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
 
     def _init_temp_dir(self):
         if config.temp_dir:
+            log.debug("cleaning temp_dir : %s",  config.temp_dir)
             rmtree(config.temp_dir)
         config.temp_dir = tempfile.mkdtemp()
+        log.debug("using temp_dir : %s",  config.temp_dir)
     
     def _fill_table(self):
         self._clear_smile_detail()
