@@ -1,6 +1,6 @@
 # Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header:
+# $Header:$
 
 inherit eutils distutils git
 
@@ -18,12 +18,7 @@ DEPEND=">=dev-lang/python-2.5
     dev-python/PyQt4"
 RDEPEND="${DEPEND}"
 
-pkg_setup() {
-}
-
 src_install() {
 	distutils_src_install
 }
 
-pkg_postinst() {
-}
