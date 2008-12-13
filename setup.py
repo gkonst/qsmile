@@ -121,7 +121,7 @@ cmdclass = {
 
 setup(
     name = "qsmile", 
-    version = "0.2",
+    version = "0.3_pre",
     author =  "Konstantin Grigoriev",
     author_email = "Konstantin.V.Grigoriev@gmail.com",
     url = "http://code.google.com/p/qsmile/",
