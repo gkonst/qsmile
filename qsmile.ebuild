@@ -21,7 +21,7 @@ pkg_setup() {
 }
 
 src_install() {
-    distutils_src_install
+	distutils_src_install
 }
 
 pkg_postinst() {
