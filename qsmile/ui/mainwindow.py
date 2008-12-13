@@ -53,11 +53,18 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.movieList = []
         self.currentSmile = None
         self.pack = None
+        
+    def __del__(self):
+        self._close_pack()
 
-    def _init_temp_dir(self):
+    def _clean_temp_dir(self):
         if config.temp_dir:
             log.debug("cleaning temp_dir : %s",  config.temp_dir)
             rmtree(config.temp_dir)
+            config.temp_dir = None
+            
+    def _init_temp_dir(self):
+        self._clean_temp_dir()
         config.temp_dir = tempfile.mkdtemp()
         log.debug("using temp_dir : %s",  config.temp_dir)
     
@@ -97,16 +104,6 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self.table.removeCellWidget(row, 1)
         self.table.removeCellWidget(row, 2)
         self.movieList[row] = None
-
-    @pyqtSignature("")
-    def on_upSmileButton_clicked(self):
-        if self.table.currentRow() > 0:
-            self._move_smile(lambda row: row - 1)
-            
-    @pyqtSignature("")
-    def on_downSmileButton_clicked(self):
-        if self.table.currentRow() < self.table.rowCount() - 1:
-            self._move_smile(lambda row: row + 1)
             
     def _move_smile(self, move):
         row = self.table.currentRow()
@@ -176,13 +173,21 @@ class MainWindow(QMainWindow, Ui_MainWindow, ModeForm):
         self._clear_all()
         self.currentSmile = None
         self.pack = None
-        if config.temp_dir:
-            rmtree(config.temp_dir)
-            config.temp_dir = None
+        self._clean_temp_dir()
 
     def _switch_form(self):
         self.smileDetailBox.setEnabled(not self.isViewMode())
         self.smileListBox.setEnabled(self.isViewMode())  
+
+    @pyqtSignature("")
+    def on_upSmileButton_clicked(self):
+        if self.table.currentRow() > 0:
+            self._move_smile(lambda row: row - 1)
+            
+    @pyqtSignature("")
+    def on_downSmileButton_clicked(self):
+        if self.table.currentRow() < self.table.rowCount() - 1:
+            self._move_smile(lambda row: row + 1)
 
     @pyqtSignature("")
     def on_addSmileButton_clicked(self):
