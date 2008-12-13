@@ -27,6 +27,8 @@ import ez_setup
 ez_setup.use_setuptools()
 
 import os
+import sys
+import subprocess
 from distutils import cmd
 from distutils.command.build import build as _build
 from setuptools import setup, find_packages
@@ -34,7 +36,13 @@ from setuptools import setup, find_packages
 try:
     import py2exe
 except ImportError:
-    pass
+    print "WARNING: you don't have py2exe installed, so .exe creation disabled"
+
+try:
+    import PyQt4
+except ImportError:
+    print "ERROR: PyQt not found! Please install it before running install."
+    sys.exit(-1)
 
 def _generate_manifest_in():
     """
@@ -69,8 +77,11 @@ class pyuic(cmd.Command):
         for ui in files:
             target_name = os.path.join(dirname, "Ui_" + ui[0: -3] + ".py")
             print "processing ", os.path.join(dirname, ui), " -> ", target_name
-            os.system("pyuic4 " + os.path.join(dirname, ui) + " -o " + target_name)
-
+            try:
+                subprocess.call(["pyuic4", os.path.join(dirname, ui), "-o",target_name])
+            except OSError, (errno, strerror):
+                print "ERROR: can't run pyuic4 - ", strerror
+                sys.exit(-1)
                 
 class pyrcc(cmd.Command):
     description = "Generates .py from .rc"
@@ -91,7 +102,11 @@ class pyrcc(cmd.Command):
         for rc in files:
             target_name = os.path.join(dirname, rc[0: -4] + "_rc.py")
             print "processing ", os.path.join(dirname, rc), " -> ", target_name
-            os.system("pyrcc4 " + os.path.join(dirname, rc) + " -o " + target_name)
+            try:
+                subprocess.call(["pyrcc4", os.path.join(dirname, rc), "-o",target_name])
+            except OSError, (errno, strerror):
+                print "ERROR: can't run pyrcc4 - ", strerror
+                sys.exit(-1)
 
 class build(_build):
     sub_commands = [('pyuic', None), ('pyrcc', None)] + _build.sub_commands
