@@ -2,18 +2,41 @@ README for qsmile (QT Smile Manager for Instant Messangers)
 
 Installation
 
-    To install qsmile you need simply unpack sources to some directory.
-    If the required packages (Qt4, sip and PyQt4) are not installed,
-    please get them and install them in the following order (order is important):
+    1. Installing from source.
+
+        To install qsmile you need simply unpack sources to some directory.
+        If the required packages (Python, Qt4, sip and PyQt4) are not installed,
+        please get them and install them in the following order (order is important):
+            
+            1) Install Python
+            
+            2) Install Qt4
+            
+            3) Build and install sip
+            
+            4) Build and install PyQt4
+                   
+            5) Install qsmile running 'python setup.py install' (you need administrator priviledges for this)
+            
+    2. Installing on Gentoo 
         
-        1. Install Qt4
+        You can install qsmile on Gentoo using two ebuilds:
+            
+            1) Using qsmile-999.ebuild you can install qsmile from latest sources in git repository.
+            
+            2) Using qsmile.ebuild you can install specific version of qsmile. 
+               Just rename qsmile.ebuild to qsmile-X.Y.ebuild, where X.Y - version you want to install.
         
-        2. Build and install sip
+    3. Installing on Windows
         
-        3. Build and install PyQt4
-               
-        4. Install qsmile
+        Just copy downloaded 'qsmile.exe' binary to some directory. That's all. =)
         
 Running
 
-    To run qsmile simply run 'main.py' script from qsmile directory.    
+    1. Linux
+
+        To run qsmile simply run 'qsmile' in console.
+        
+    2. Windows
+    
+        To run qsmile run 'qsmile.exe' from dist dir.
