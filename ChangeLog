@@ -1,5 +1,20 @@
 CHANGELOG for qsmile (QT Smile Manager for Instant Messangers)
 
+Version 0.2
+ - Pack
+      - Create new pack
+      - Close pack
+ - Import
+      - Import From Pidgin dir
+      - Import From Qip dir
+      - Pack validation
+ - Simple installation
+      - Windows binary
+      - linux install script
+      - gentoo ebuild
+ - Cross-platform issues
+ - Logging
+
 Version 0.1:
  - Import
   - Import From Kopete JISP
