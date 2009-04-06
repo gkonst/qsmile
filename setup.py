@@ -29,6 +29,7 @@ ez_setup.use_setuptools()
 import os
 import sys
 import subprocess
+import platform
 from distutils import cmd
 from distutils.command.build import build as _build
 from setuptools import setup, find_packages
@@ -78,7 +79,10 @@ class pyuic(cmd.Command):
             target_name = os.path.join(dirname, "Ui_" + ui[0: -3] + ".py")
             print "processing ", os.path.join(dirname, ui), " -> ", target_name
             try:
-                subprocess.call(["pyuic4", os.path.join(dirname, ui), "-o",target_name])
+                ext = ""
+                if platform.system() == 'Windows':
+                    ext=".bat"
+                subprocess.call(["pyuic4" + ext, os.path.join(dirname, ui), "-o",target_name])
             except OSError, (errno, strerror):
                 print "ERROR: can't run pyuic4 - ", strerror
                 sys.exit(-1)
